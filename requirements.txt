@@ -1,0 +1,5 @@
+Flask==0.10.1
+Flask-Classy==0.6.8
+Jinja2==2.7.1
+Werkzeug==0.9.4
+itsdangerous==0.23
