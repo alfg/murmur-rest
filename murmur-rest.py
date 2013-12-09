@@ -50,10 +50,25 @@ class ServersView(FlaskView):
         Lists server details
         """
 
-        server = meta.getServer(id)
-        tree = obj_to_dict(server.getTree())
+        s = meta.getServer(id)
+        tree = obj_to_dict(s.getTree())
 
-        return jsonify(server=tree)
+        server = {
+            'config': {
+                'port': get_server_port(meta, s)
+            },
+            'id': s.id(),
+            'name': get_server_conf(meta, s, 'registerName'),
+            'users': (s.isRunning() and len(s.getUsers())) or 0,
+            'maxusers': get_server_conf(meta, s, 'users') or 0,
+            'uptime': s.getUptime() if s.isRunning() else 0,
+            'fuzzy_uptime': str(
+                timedelta(seconds=s.getUptime()) if s.isRunning() else ''
+            ),
+            'tree': tree
+        }
+
+        return jsonify(server=server)
 
     def post(self):
         """
@@ -63,7 +78,11 @@ class ServersView(FlaskView):
         server = meta.newServer()
         server.start()
 
-        return jsonify(server=server.id())
+        json_data = {
+            'id': server.id()
+        }
+
+        return jsonify(server=json_data)
 
     def delete(self, id):
         """
