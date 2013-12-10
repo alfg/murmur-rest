@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta, datetime
 from flask import Flask
-from flask import jsonify, json
+from flask import request, jsonify, json
 from flask.ext.classy import FlaskView
 
 import config
@@ -55,7 +55,9 @@ class ServersView(FlaskView):
 
         server = {
             'config': {
-                'port': get_server_port(meta, s)
+                'port': get_server_port(meta, s),
+                'password': get_server_conf(meta, s, 'password'),
+                'welcometext': get_server_conf(meta, s, 'welcometext')
             },
             'id': s.id(),
             'name': get_server_conf(meta, s, 'registerName'),
@@ -75,9 +77,35 @@ class ServersView(FlaskView):
         Creates a server, starts server, and returns id
         """
 
+        # Basic Configuration
+        password = request.form.get('password')
+        port = request.form.get('port')  # Defaults to inifile+server_id-1
+        timeout = request.form.get('timeout')
+        bandwidth = request.form.get('bandwidth')
+        users = request.form.get('users')
+        welcometext = request.form.get('welcometext')
+
+        # Data for registration in the public server list
+        registername = request.form.get('registername')
+        registerpassword = request.form.get('registerpassword')
+        registerhostname = request.form.get('registerhostname')
+        registerurl = request.form.get('registerurl')
+
+        # Create server
         server = meta.newServer()
+
+        # Set conf if provided
+        server.setConf('password', password) if password else None
+        server.setConf('port', port) if port else None
+        server.setConf('timeout', timeout) if timeout else None
+        server.setConf('bandwidth', bandwidth) if bandwidth else None
+        server.setConf('users', users) if users else None
+        server.setConf('welcometext', welcometext) if welcometext else None
+
+        # Start server
         server.start()
 
+        # Format to JSON
         json_data = {
             'id': server.id()
         }
