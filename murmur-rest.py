@@ -101,6 +101,7 @@ class ServersView(FlaskView):
         server.setConf('bandwidth', bandwidth) if bandwidth else None
         server.setConf('users', users) if users else None
         server.setConf('welcometext', welcometext) if welcometext else None
+        server.setConf('registername', registername) if registername else None
 
         # Start server
         server.start()
