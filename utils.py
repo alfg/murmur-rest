@@ -8,7 +8,7 @@ def obj_to_dict(obj):
         return [obj_to_dict(item) for item in obj]
 
     if type(obj) == dict:
-        return dict((k, obj_to_dict(v)) for k, v in obj.iteritems())
+        return dict((str(k), obj_to_dict(v)) for k, v in obj.iteritems())
 
     return obj_to_dict(obj.__dict__)
 
