@@ -77,7 +77,7 @@ class ServersView(FlaskView):
             ),
             'parent_channel': tree['c'],
             'sub_channels': tree['children'],
-            'users': obj_to_dict(s.getUsers()),
+            'users': tree['users'],
             'registered_users': s.getRegisteredUsers(''),
             'log_length': s.getLogLen(),
             'bans': s.getBans()
