@@ -1,24 +1,17 @@
-import os
-from datetime import timedelta, datetime
-from flask import Flask
+from datetime import timedelta
+
 from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
-import config
+from app import app, meta
 from utils import obj_to_dict, get_server_conf, get_server_port
-
-import Ice
-
-app = Flask(__name__)
-
-Ice.loadSlice('', ['-I' + Ice.getSliceDir(), os.path.join(app.root_path, config.SLICE_FILE)])
-import Murmur
-ice = Ice.initialize()
-proxy = ice.stringToProxy('Meta:tcp -h localhost -p 6502'.encode('ascii'))
-meta = Murmur.MetaPrx.checkedCast(proxy)
 
 
 class ServersView(FlaskView):
+    """
+    Primary interface for creating, reading and writing to mumble servers.
+    """
+
     route_prefix = '/api/v1/'
 
     def index(self):
@@ -40,7 +33,7 @@ class ServersView(FlaskView):
                 'maxusers': get_server_conf(meta, s, 'users') or 0,
                 'channels': (s.isRunning() and len(s.getChannels())) or 0,
                 'uptime': s.getUptime() if s.isRunning() else 0,
-                'fuzzy_uptime': str(
+                'humanize_uptime': str(
                     timedelta(seconds=s.getUptime()) if s.isRunning() else ''
                 ),
                 'log_length': s.getLogLen()
@@ -72,7 +65,7 @@ class ServersView(FlaskView):
             'user_count': (s.isRunning() and len(s.getUsers())) or 0,
             'maxusers': get_server_conf(meta, s, 'users') or 0,
             'uptime': s.getUptime() if s.isRunning() else 0,
-            'fuzzy_uptime': str(
+            'humanize_uptime': str(
                 timedelta(seconds=s.getUptime()) if s.isRunning() else ''
             ),
             'parent_channel': tree['c'],
@@ -216,28 +209,7 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
 
-class LogsView(FlaskView):
-    route_prefix = '/api/v1/'
-
-    def index(self):
-        return jsonify(message="Please provide a server ID")
-
-    def get(self, id):
-        server = meta.getServer(id)
-        logs = []
-
-        for l in server.getLog(0, -1):
-            logs.append({
-                "text": l.txt,
-                "timestamp": l.timestamp,
-            })
-
-        return jsonify(log=logs)
-
-
-
 ServersView.register(app)
-LogsView.register(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
