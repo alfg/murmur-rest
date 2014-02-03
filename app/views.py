@@ -209,7 +209,29 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
 
+class StatsView(FlaskView):
+    """
+    View for gathering stats on murmur statistics.
+    """
+
+    route_prefix = '/api/v1/'
+
+    def index(self):
+        """
+        Lists all stats
+        """
+
+        stats = {
+            'all_servers': len(meta.getAllServers()),
+            'booted_servers': len(meta.getBootedServers())
+        }
+
+        # Workaround response due to jsonify() not allowing top-level json response
+        # https://github.com/mitsuhiko/flask/issues/170
+        return Response(json.dumps(stats, sort_keys=True, indent=4), mimetype='application/json')
+
 ServersView.register(app)
+StatsView.register(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
