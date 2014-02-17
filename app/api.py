@@ -1,10 +1,18 @@
+"""
+api.py
+All API route endpoints
+
+:copyright: (C) 2014 by github.com/alfg.
+:license:   MIT, see README for more details.
+"""
+
 from datetime import timedelta
 
 from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
-from app import app, meta
-from utils import obj_to_dict, get_server_conf, get_server_port
+from app import app, meta, auth, auth_enabled
+from app.utils import obj_to_dict, get_server_conf, get_server_port, conditional
 
 
 class ServersView(FlaskView):
@@ -14,6 +22,7 @@ class ServersView(FlaskView):
 
     route_prefix = '/api/v1/'
 
+    @conditional(auth.login_required, auth_enabled)
     def index(self):
         """
         Lists all servers
@@ -32,8 +41,8 @@ class ServersView(FlaskView):
                 'users': (s.isRunning() and len(s.getUsers())) or 0,
                 'maxusers': get_server_conf(meta, s, 'users') or 0,
                 'channels': (s.isRunning() and len(s.getChannels())) or 0,
-                'uptime': s.getUptime() if s.isRunning() else 0,
-                'humanize_uptime': str(
+                'uptime_seconds': s.getUptime() if s.isRunning() else 0,
+                'uptime': str(
                     timedelta(seconds=s.getUptime()) if s.isRunning() else ''
                 ),
                 'log_length': s.getLogLen()
@@ -43,6 +52,7 @@ class ServersView(FlaskView):
         # https://github.com/mitsuhiko/flask/issues/170
         return Response(json.dumps(servers, sort_keys=True, indent=4), mimetype='application/json')
 
+    @conditional(auth.login_required, auth_enabled)
     def get(self, id):
         """
         Lists server details
@@ -78,6 +88,7 @@ class ServersView(FlaskView):
 
         return jsonify(json_data)
 
+    @conditional(auth.login_required, auth_enabled)
     def post(self):
         """
         Creates a server, starts server, and returns id
@@ -119,6 +130,7 @@ class ServersView(FlaskView):
 
         return jsonify(json_data)
 
+    @conditional(auth.login_required, auth_enabled)
     def delete(self, id):
         """
         Shuts down and deletes a server
@@ -130,6 +142,7 @@ class ServersView(FlaskView):
         return jsonify(message="Server deleted")
 
     # Nested routes and actions
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/logs', methods=['GET'])
     def logs(self, id):
         """ Gets all server logs by server ID
@@ -145,6 +158,7 @@ class ServersView(FlaskView):
             })
         return Response(json.dumps(logs, sort_keys=True, indent=4), mimetype='application/json')
 
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/register/<user>', methods=['GET'])
     def register_user(self, id, user):
         """ Gets registered user by ID
@@ -160,6 +174,7 @@ class ServersView(FlaskView):
         }
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels', methods=['GET'])
     def channels(self, id):
         """ Gets all channels in server
@@ -170,6 +185,7 @@ class ServersView(FlaskView):
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels/<channel_id>', methods=['GET'])
     def channel(self, id, channel_id):
         """ Gets all channels in server
@@ -180,6 +196,7 @@ class ServersView(FlaskView):
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/bans', methods=['GET'])
     def bans(self, id):
         """ Gets all banned IPs in server
@@ -189,6 +206,7 @@ class ServersView(FlaskView):
         data = obj_to_dict(server.getBans())
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/conf', methods=['GET'])
     def conf(self, id):
         """ Gets all configuration in server
@@ -198,6 +216,7 @@ class ServersView(FlaskView):
         data = obj_to_dict(server.getAllConf())
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels/<channel_id>/acl', methods=['GET'])
     def channel_acl(self, id, channel_id):
         """ Gets all channel ACLs in server
@@ -216,6 +235,7 @@ class StatsView(FlaskView):
 
     route_prefix = '/api/v1/'
 
+    @conditional(auth.login_required, auth_enabled)
     def index(self):
         """
         Lists all stats
