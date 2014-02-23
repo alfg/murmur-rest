@@ -12,7 +12,7 @@ from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
-from app.utils import obj_to_dict, get_server_conf, get_server_port, conditional
+from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
 
 
 class ServersView(FlaskView):
@@ -243,7 +243,11 @@ class StatsView(FlaskView):
 
         stats = {
             'all_servers': len(meta.getAllServers()),
-            'booted_servers': len(meta.getBootedServers())
+            'booted_servers': len(meta.getBootedServers()),
+            'users_online': get_all_users_count(meta),
+            'murmur_version': meta.getVersion()[3],
+            'murmur-rest_version': '0.1',
+            'uptime': meta.getUptime()
         }
 
         # Workaround response due to jsonify() not allowing top-level json response

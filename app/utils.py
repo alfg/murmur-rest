@@ -9,6 +9,7 @@ Utilities used within the application.
 from settings import USERS as users
 from app import auth
 
+
 @auth.get_password
 def get_pw(username):
     """ Required get_password function used for flask-httpauth. """
@@ -69,5 +70,14 @@ def get_server_port(meta, server, val=None):
     if '' == val:
         val = meta.getDefaultConf().get('port', 0)
         val = int(val) + server.id() - 1
-
     return int(val)
+
+
+def get_all_users_count(meta):
+    """
+    Gets the entire list of users online count by iterating through servers.
+    """
+    user_count = 0
+    for s in meta.getAllServers():
+        user_count += len(s.getUsers())
+    return user_count
