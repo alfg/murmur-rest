@@ -12,7 +12,9 @@ from app import auth
 
 @auth.get_password
 def get_pw(username):
-    """ Required get_password function used for flask-httpauth. """
+    """
+    Required get_password function used for flask-httpauth.
+    """
     if username in users:
         return users[username]
     return None
@@ -79,5 +81,5 @@ def get_all_users_count(meta):
     """
     user_count = 0
     for s in meta.getAllServers():
-        user_count += len(s.getUsers())
+        user_count += (s.isRunning() and len(s.getUsers())) or 0
     return user_count
