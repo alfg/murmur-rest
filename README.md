@@ -50,6 +50,8 @@ cd /directory/to/murmur-rest
 pip install -r requirements.txt
 ```
 
+*Note*: If running in virtualenv, use the `--system-site-packages` flag in order to import the Ice library.
+
 3) Run and test application
 
 ```
