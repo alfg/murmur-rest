@@ -224,8 +224,22 @@ class ServersView(FlaskView):
 
         server = meta.getServer(id)
         data = obj_to_dict(server.getACL(channel_id))
-
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<id>/sendmessage', methods=['POST'])
+    def send_message(self, id):
+        """ Sends a message to all channels in a server
+        """
+
+        message = request.form.get('message')
+
+        if message:
+            server = meta.getServer(id)
+            server.sendMessageChannel(0, True, message)
+            return jsonify(message="Message sent.")
+        else:
+            return jsonify(message="Message required.")
 
 
 class StatsView(FlaskView):
