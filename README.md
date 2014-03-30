@@ -12,22 +12,22 @@ Murmur-REST is still in early development. If you find any issues or would like 
 
 | Endpoint | Description |
 | ---- | --------------- |
-| GET /api/v1/servers/ | Get server list |
-| GET /api/v1/servers/:serverid/ | Get server details |
-| POST /api/v1/servers/:serverid/ | Create server |
-| DELETE /api/v1/servers/:serverid/ | Delete server |
-| GET /api/v1/server/:serverid/logs/ | Get server logs
-| GET /api/v1/server/:serverid/channels/ | Get server channels
-| GET /api/v1/server/:serverid/channels/:channelid/ | Get server channel details
-| GET /api/v1/server/:serverid/bans/ | Get list of banned users
-| GET /api/v1/server/:serverid/conf/ | Get server configuration for specified id
-| GET /api/v1/server/:serverid/channels/:channelid/acl/ | Get ACL list for channel ID
+| GET /servers/ | Get server list |
+| GET /servers/:serverid/ | Get server details |
+| POST /servers/:serverid/ | Create server |
+| DELETE /servers/:serverid/ | Delete server |
+| GET /server/:serverid/logs/ | Get server logs
+| GET /server/:serverid/channels/ | Get server channels
+| GET /server/:serverid/channels/:channelid/ | Get server channel details
+| GET /server/:serverid/bans/ | Get list of banned users
+| GET /server/:serverid/conf/ | Get server configuration for specified id
+| GET /server/:serverid/channels/:channelid/acl/ | Get ACL list for channel ID
 
 #### Stats
 
 | Endpoint | Description |
 | ---- | --------------- |
-| GET /api/v1/stats/ | Get all statistics |
+| GET /stats/ | Get all statistics |
 
 
 ###  Deployment for Development
@@ -59,7 +59,7 @@ $ python runserver.py
  * Running on http://0.0.0.0:5000/
  * Restarting with reloader
  
-$ curl http://127.0.0.1:5000/api/v1/servers/
+$ curl http://127.0.0.1:5000/servers/
 [
     {
         "address": ":::64739",
@@ -92,8 +92,8 @@ For example, if using Gunicorn and virtualenv:
 
 - Early development. Expect changes that might break the first revision of the RESTful API
 - API is incomplete and will be completed over time
-- I'm following the RESTful API specification and standards as closely as I can, please feel
-free to make any corrections
+- I'm following the RESTful API specification and standards as closely as I can (with some exceptions), please feel
+free to suggest any corrections
 - Murmur SLICE API is located here: http://mumble.sourceforge.net/slice/Murmur.html
 
 ### TODO
@@ -101,6 +101,7 @@ free to make any corrections
 - Authentication
 - Complete support for full Murmur SLICE API
 - Easier deployment for production
+- Documentation
 
 ### Resources
 - [Murmur SLICE API](http://mumble.sourceforge.net/slice/Murmur.html)

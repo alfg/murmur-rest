@@ -20,8 +20,6 @@ class ServersView(FlaskView):
     Primary interface for creating, reading and writing to mumble servers.
     """
 
-    route_prefix = '/api/v1/'
-
     @conditional(auth.login_required, auth_enabled)
     def index(self):
         """
@@ -246,8 +244,6 @@ class StatsView(FlaskView):
     """
     View for gathering stats on murmur statistics.
     """
-
-    route_prefix = '/api/v1/'
 
     @conditional(auth.login_required, auth_enabled)
     def index(self):
