@@ -16,7 +16,7 @@ def get_pw(username):
     Required get_password function used for flask-httpauth.
     """
     if username in users:
-        return users[username]
+        return users.get(username)
     return None
 
 
