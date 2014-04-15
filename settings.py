@@ -22,7 +22,7 @@ SLICE_FILE = 'Murmur.ice'
 MURMUR_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Digest Authentication. Add users as necessary.
-ENABLE_AUTH = False  # If enabled,
+ENABLE_AUTH = False  # If enabled, add user credentials below
 USERS = {
     "admin": "password",
 }

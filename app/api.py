@@ -35,6 +35,8 @@ class ServersView(FlaskView):
                     get_server_conf(meta, s, 'host'),
                     get_server_port(meta, s),
                 ),
+                'host': get_server_conf(meta, s, 'host'),
+                'port': get_server_port(meta, s),
                 'running': s.isRunning(),
                 'users': (s.isRunning() and len(s.getUsers())) or 0,
                 'maxusers': get_server_conf(meta, s, 'users') or 0,
