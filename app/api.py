@@ -58,6 +58,7 @@ class ServersView(FlaskView):
         Lists server details
         """
 
+        id = long(id)
         s = meta.getServer(id)
         tree = obj_to_dict(s.getTree())
 
@@ -136,19 +137,19 @@ class ServersView(FlaskView):
         Shuts down and deletes a server
         """
 
-        server = meta.getServer(id)
+        server = meta.getServer(int(id))
         server.stop()
         server.delete()
         return jsonify(message="Server deleted")
 
     # Nested routes and actions
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/logs', methods=['GET'])
+    @route('<int:id>/logs', methods=['GET'])
     def logs(self, id):
         """ Gets all server logs by server ID
         """
 
-        server = meta.getServer(id)
+        server = meta.getServer(int(id))
         logs = []
 
         for l in server.getLog(0, -1):
@@ -164,7 +165,7 @@ class ServersView(FlaskView):
         """ Gets registered user by ID
         """
 
-        server = meta.getServer(id)
+        server = meta.getServer(int(id))
         data = obj_to_dict(server.getRegistration(user))
 
         json_data = {
@@ -180,7 +181,7 @@ class ServersView(FlaskView):
         """ Gets all channels in server
         """
 
-        server = meta.getServer(id)
+        server = meta.getServer(int(id))
         data = obj_to_dict(server.getChannels())
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')

@@ -41,7 +41,7 @@ def obj_to_dict(obj):
     """
     rv = {'_type': str(type(obj))}
 
-    if type(obj) in (bool, int, float, str, unicode):
+    if type(obj) in (bool, int, long, float, str, unicode):
         return obj
 
     if type(obj) in (list, tuple):
