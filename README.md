@@ -22,6 +22,7 @@ Murmur-REST is still in early development. If you find any issues or would like 
 | GET /server/:serverid/bans/ | Get list of banned users
 | GET /server/:serverid/conf/ | Get server configuration for specified id
 | GET /server/:serverid/channels/:channelid/acl/ | Get ACL list for channel ID
+| POST /server/:serverid/setsuperuserpw/ | Sets SuperUser password
 
 #### Stats
 

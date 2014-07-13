@@ -30,7 +30,7 @@ auth_enabled = settings.ENABLE_AUTH
 Ice.loadSlice('', ['-I' + Ice.getSliceDir(), os.path.join(settings.MURMUR_ROOT, settings.SLICE_FILE)])
 import Murmur
 ice = Ice.initialize()
-proxy = ice.stringToProxy('Meta:tcp -h localhost -p 6502'.encode('ascii'))
+proxy = ice.stringToProxy(settings.ICE_HOST.encode('ascii'))
 meta = Murmur.MetaPrx.checkedCast(proxy)
 
 # Load route endpoints

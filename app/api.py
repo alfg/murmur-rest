@@ -228,7 +228,7 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/sendmessage', methods=['POST'])
+    @route('<int:id>/sendmessage', methods=['POST'])
     def send_message(self, id):
         """ Sends a message to all channels in a server
         """
@@ -241,6 +241,21 @@ class ServersView(FlaskView):
             return jsonify(message="Message sent.")
         else:
             return jsonify(message="Message required.")
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/setsuperuserpw', methods=['POST'])
+    def set_superuser_pw(self, id):
+        """ Sets SuperUser password for server id
+        """
+
+        password = request.form.get('password')
+
+        if password:
+            server = meta.getServer(id)
+            server.setSuperuserPassword(password)
+            return jsonify(message="Superuser password set.")
+        else:
+            return jsonify(message="Password required.")
 
 
 class StatsView(FlaskView):
