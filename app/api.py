@@ -30,7 +30,7 @@ class ServersView(FlaskView):
         for s in meta.getAllServers():
             servers.append({
                 'id': s.id(),
-                'name': get_server_conf(meta, s, 'registerName'),
+                'name': get_server_conf(meta, s, 'registername'),
                 'address': '%s:%s' % (
                     get_server_conf(meta, s, 'host'),
                     get_server_port(meta, s),
@@ -64,7 +64,7 @@ class ServersView(FlaskView):
 
         json_data = {
             'id': s.id(),
-            'name': get_server_conf(meta, s, 'registerName'),
+            'name': get_server_conf(meta, s, 'registername'),
             'host': get_server_conf(meta, s, 'host'),
             'port': get_server_port(meta, s),
             'address': '%s:%s' % (
