@@ -60,7 +60,12 @@ class ServersView(FlaskView):
 
         id = long(id)
         s = meta.getServer(id)
-        tree = obj_to_dict(s.getTree())
+
+        # Return 404 if not found
+        if s is None:
+            return jsonify(message="Not Found"), 404
+
+        tree = obj_to_dict(s.getTree()) if s.isRunning() else None
 
         json_data = {
             'id': s.id(),
@@ -75,16 +80,17 @@ class ServersView(FlaskView):
             'welcometext': get_server_conf(meta, s, 'welcometext'),
             'user_count': (s.isRunning() and len(s.getUsers())) or 0,
             'maxusers': get_server_conf(meta, s, 'users') or 0,
+            'running': s.isRunning(),
             'uptime': s.getUptime() if s.isRunning() else 0,
             'humanize_uptime': str(
                 timedelta(seconds=s.getUptime()) if s.isRunning() else ''
             ),
-            'parent_channel': tree['c'],
-            'sub_channels': tree['children'],
-            'users': tree['users'],
-            'registered_users': s.getRegisteredUsers(''),
+            'parent_channel': tree['c'] if s.isRunning() else None,
+            'sub_channels': tree['children'] if s.isRunning() else None,
+            'users': tree['users'] if s.isRunning() else None,
+            'registered_users': s.getRegisteredUsers('') if s.isRunning() else None,
             'log_length': s.getLogLen(),
-            'bans': s.getBans()
+            'bans': s.getBans() if s.isRunning() else 0
         }
 
         return jsonify(json_data)
@@ -138,11 +144,62 @@ class ServersView(FlaskView):
         """
 
         server = meta.getServer(int(id))
-        server.stop()
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        # Stop server first if it is running
+        if server.isRunning():
+            server.stop()
+
+        # Delete server instance
         server.delete()
         return jsonify(message="Server deleted")
 
+    ##
     # Nested routes and actions
+    ##
+    @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/start', methods=['POST'])
+    def start(self, id):
+        """ Starts server
+        """
+
+        server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        # Message if server is already running
+        if server.isRunning():
+            return jsonify(message="Server already running.")
+
+        # Start server instance
+        server.start()
+        return jsonify(message="Server started.")
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/stop', methods=['POST'])
+    def stop(self, id):
+        """ Stops server
+        """
+
+        server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        # Stop server first if it is running
+        if not server.isRunning():
+            return jsonify(message="Server already stopped.")
+
+        # Stop server instance
+        server.stop()
+        return jsonify(message="Server stopped.")
+
     @conditional(auth.login_required, auth_enabled)
     @route('<int:id>/logs', methods=['GET'])
     def logs(self, id):
@@ -150,6 +207,11 @@ class ServersView(FlaskView):
         """
 
         server = meta.getServer(int(id))
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
         logs = []
 
         for l in server.getLog(0, -1):
@@ -166,6 +228,11 @@ class ServersView(FlaskView):
         """
 
         server = meta.getServer(int(id))
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
         data = obj_to_dict(server.getRegistration(user))
 
         json_data = {
@@ -182,6 +249,11 @@ class ServersView(FlaskView):
         """
 
         server = meta.getServer(int(id))
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
         data = obj_to_dict(server.getChannels())
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
@@ -193,6 +265,11 @@ class ServersView(FlaskView):
         """
 
         server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
         data = obj_to_dict(server.getChannelState(channel_id))
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
@@ -204,18 +281,49 @@ class ServersView(FlaskView):
         """
 
         server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
         data = obj_to_dict(server.getBans())
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/conf', methods=['GET'])
+    @route('<int:id>/conf', methods=['GET'])
     def conf(self, id):
         """ Gets all configuration in server
         """
 
         server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
         data = obj_to_dict(server.getAllConf())
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/conf', methods=['POST'])
+    def set_conf(self, id):
+        """ Sends a message to all channels in a server
+        """
+
+        key = request.form.get('key')
+        value = request.form.get('value')
+
+        if key and value:
+            server = meta.getServer(id)
+
+            # Return 404 if not found
+            if server is None:
+                return jsonify(message="Not Found"), 404
+
+            server.setConf(key, value)
+            return jsonify(message="Configuration updated.")
+        else:
+            return jsonify(message="Configuration key and value required.")
 
     @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels/<channel_id>/acl', methods=['GET'])
@@ -224,6 +332,11 @@ class ServersView(FlaskView):
         """
 
         server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
         data = obj_to_dict(server.getACL(channel_id))
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
@@ -237,6 +350,11 @@ class ServersView(FlaskView):
 
         if message:
             server = meta.getServer(id)
+
+            # Return 404 if not found
+            if server is None:
+                return jsonify(message="Not Found"), 404
+
             server.sendMessageChannel(0, True, message)
             return jsonify(message="Message sent.")
         else:
@@ -252,6 +370,11 @@ class ServersView(FlaskView):
 
         if password:
             server = meta.getServer(id)
+
+            # Return 404 if not found
+            if server is None:
+                return jsonify(message="Not Found"), 404
+
             server.setSuperuserPassword(password)
             return jsonify(message="Superuser password set.")
         else:
@@ -282,6 +405,7 @@ class StatsView(FlaskView):
         # https://github.com/mitsuhiko/flask/issues/170
         return Response(json.dumps(stats, sort_keys=True, indent=4), mimetype='application/json')
 
+# Register views
 ServersView.register(app)
 StatsView.register(app)
 
