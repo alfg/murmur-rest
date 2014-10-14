@@ -103,6 +103,7 @@ free to suggest any corrections
 - Complete support for full Murmur SLICE API
 - Easier deployment for production
 - Documentation
+- Error Handling
 
 ### Resources
 - [Murmur SLICE API](http://mumble.sourceforge.net/slice/Murmur.html)
