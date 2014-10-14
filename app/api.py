@@ -14,6 +14,8 @@ from flask.ext.classy import FlaskView, route
 from app import app, meta, auth, auth_enabled
 from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
 
+import Murmur
+
 
 class ServersView(FlaskView):
     """
@@ -379,6 +381,32 @@ class ServersView(FlaskView):
             return jsonify(message="Superuser password set.")
         else:
             return jsonify(message="Password required.")
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/kickuser', methods=['POST'])
+    def kick_user(self, id):
+        """ Kicks user from server.
+        """
+
+        user_session = int(request.form.get("usersession"))  # Session ID of user
+        reason = request.form.get("reason", "Reason not defined.")  # Reason messaged for being kicked.
+
+        if user_session:
+            server = meta.getServer(id)
+
+            # Return 404 if not found
+            if server is None:
+                return jsonify(message="Not Found"), 404
+
+            try:
+                server.kickUser(user_session, reason)
+                return jsonify(message="User kicked from server.")
+
+            except Murmur.InvalidSessionException:
+                return jsonify(message="Not a valid session ID.")
+
+        else:
+            return jsonify(message="User session required.")
 
 
 class StatsView(FlaskView):
