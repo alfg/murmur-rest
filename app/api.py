@@ -224,6 +224,59 @@ class ServersView(FlaskView):
         return Response(json.dumps(logs, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
+    @route('<id>/user/del/<user>', methods=['POST'])
+    def user_del_user(self, id, user):
+        """ Creates user
+        """
+
+        server = meta.getServer(int(id))
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+        
+        server.unregisterUser(int(user))
+        
+        json_data = {
+            "user_id": user,
+            "deleted": 'Success'
+        }
+        return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
+
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<id>/user/new', methods=['POST'])
+    def user_new_user(self, id):
+        """ Creates user
+        """
+
+        server = meta.getServer(int(id))
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+        
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        new_user = {
+            Murmur.UserInfo.UserName: username,
+            Murmur.UserInfo.UserPassword: password
+        }
+        
+        added = server.registerUser(new_user)
+        
+        data = obj_to_dict(server.getRegistration(added))
+        
+
+        json_data = {
+            "user_id": added,
+            "username": data['UserName'],
+            "last_active": data['UserLastActive']
+        }
+        return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/register/<user>', methods=['GET'])
     def register_user(self, id, user):
         """ Gets registered user by ID
@@ -235,7 +288,7 @@ class ServersView(FlaskView):
         if server is None:
             return jsonify(message="Not Found"), 404
 
-        data = obj_to_dict(server.getRegistration(user))
+        data = obj_to_dict(server.getRegistration(int(user)))
 
         json_data = {
             "user_id": user,
