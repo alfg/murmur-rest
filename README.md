@@ -30,6 +30,13 @@ Murmur-REST is still in early development. If you find any issues or would like 
 | ---- | --------------- |
 | GET /stats/ | Get all statistics |
 
+#### Users
+
+| Endpoint | Description |
+| ---- | --------------- |
+| GET /server/:serverid/user/:userid | Get User |
+| POST /server/:serverid/user | Create User, formdata:  username&password |
+| DELETE /server/:serverid/user/:userid | Delete User |
 
 ###  Deployment for Development
 
