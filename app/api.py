@@ -224,16 +224,21 @@ class ServersView(FlaskView):
         return Response(json.dumps(logs, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/user/del/<user>', methods=['POST'])
+    @route('<id>/user/<user>', methods=['DELETE'])
     def user_del_user(self, id, user):
-        """ Creates user
+        """ Deletes user
         """
 
         server = meta.getServer(int(id))
 
         # Return 404 if not found
         if server is None:
-            return jsonify(message="Not Found"), 404
+            return jsonify(message="No Server Found for ID "+str(id)), 500
+        
+        olduser = server.getRegistration(int(user))
+        
+        if olduser is None:
+            return jsonify(message="No User Found for ID "+str(user)), 500
         
         server.unregisterUser(int(user))
         
@@ -245,7 +250,7 @@ class ServersView(FlaskView):
 
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/user/new', methods=['POST'])
+    @route('<id>/user', methods=['POST'])
     def user_new_user(self, id):
         """ Creates user
         """
@@ -277,7 +282,7 @@ class ServersView(FlaskView):
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/register/<user>', methods=['GET'])
+    @route('<id>/user/<user>', methods=['GET'])
     def register_user(self, id, user):
         """ Gets registered user by ID
         """
