@@ -18,6 +18,7 @@ Murmur-REST is still in early development. If you find any issues or would like 
 | GET /servers/:serverid/ | Get server details |
 | POST /servers/:serverid/ | Create server |
 | DELETE /servers/:serverid/ | Delete server |
+| DELETE /servers/delete?id=1,2,3 | Delete multiple servers |
 | GET /server/:serverid/logs/ | Get server logs
 | GET /server/:serverid/channels/ | Get server channels
 | GET /server/:serverid/channels/:channelid/ | Get server channel details
@@ -40,7 +41,7 @@ Murmur-REST is still in early development. If you find any issues or would like 
 | POST /server/:serverid/user | Create User, formdata:  username&password |
 | DELETE /server/:serverid/user/:userid | Delete User |
 
-###  Deployment for Development
+### Development Setup
 
 Assuming you already have Murmur running and set up, follow the instructions below to run murmur-rest
 for development. Tested on Ubuntu 13.10, but should be to run wherever Murmur and Zero Ice are supported.
@@ -86,6 +87,29 @@ $ curl http://127.0.0.1:5000/servers/
 ]
 ```
 
+
+### Docker Setup
+
+A Dockerfile is provided to easily setup a local development setup. Install [Docker](https://docs.docker.com/engine/installation/) and run the following commands:
+
+* Build the image:
+```
+cd /path/to/murmur-rest
+docker build -t murmur-rest .
+```
+
+This will build the image and pull in all dependencies to run the application, including murmur.
+
+* Run container:
+```
+docker run -p 5000:5000 -t -i murmur-rest
+```
+
+* Load `http://{VM IP}:5000/servers/` into the browser to test.
+If you're unsure what your Docker VM's host is, just run `docker-machine ls` to check.
+
+
+
 ###  Deployment for Production
 
 Following the same steps for Deployment for Development, just use a Python WSGI application server
@@ -125,7 +149,7 @@ free to suggest any corrections
 
 The MIT License (MIT)
 
-Copyright (c) 2014 github.com/alfg
+Copyright (c) 2016 github.com/alfg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

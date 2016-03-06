@@ -19,3 +19,5 @@ ADD ./etc/supervisord.conf /etc/supervisord.conf
 ADD . /opt
 
 WORKDIR /opt
+
+CMD ["/usr/bin/supervisord"]

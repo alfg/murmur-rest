@@ -159,6 +159,33 @@ class ServersView(FlaskView):
         server.delete()
         return jsonify(message="Server deleted")
 
+    @conditional(auth.login_required, auth_enabled)
+    @route('delete', methods=['DELETE'])
+    def delete_multiple(self):
+        """
+        Delete multiple servers.
+        """
+
+        id = request.args.get('id')
+        if not id:
+            return jsonify(message="No servers to delete.")
+
+        ids = map(int, id.split(","))
+
+        # Delete each server.
+        for i in ids:
+            server = meta.getServer(i)
+
+            if not server:
+                continue
+
+            if server.isRunning():
+                server.stop()
+
+            server.delete()
+
+        return jsonify(message="Deleting servers.", ids=ids)
+
     ##
     # Nested routes and actions
     ##
@@ -233,15 +260,15 @@ class ServersView(FlaskView):
 
         # Return 404 if not found
         if server is None:
-            return jsonify(message="No Server Found for ID "+str(id)), 500
-        
+            return jsonify(message="No Server Found for ID " + str(id)), 500
+
         olduser = server.getRegistration(int(user))
-        
+
         if olduser is None:
-            return jsonify(message="No User Found for ID "+str(user)), 500
-        
+            return jsonify(message="No User Found for ID " + str(user)), 500
+
         server.unregisterUser(int(user))
-        
+
         json_data = {
             "user_id": user,
             "deleted": 'Success'
@@ -260,19 +287,18 @@ class ServersView(FlaskView):
         # Return 404 if not found
         if server is None:
             return jsonify(message="Not Found"), 404
-        
+
         username = request.form.get('username')
         password = request.form.get('password')
-        
+
         new_user = {
             Murmur.UserInfo.UserName: username,
             Murmur.UserInfo.UserPassword: password
         }
-        
+
         added = server.registerUser(new_user)
-        
+
         data = obj_to_dict(server.getRegistration(added))
-        
 
         json_data = {
             "user_id": added,
