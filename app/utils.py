@@ -6,6 +6,9 @@ Utilities used within the application.
 :license:   MIT, see README for more details.
 """
 
+from flask import request, current_app
+from functools import wraps
+
 from settings import USERS as users
 from app import auth
 
@@ -83,3 +86,18 @@ def get_all_users_count(meta):
     for s in meta.getAllServers():
         user_count += (s.isRunning() and len(s.getUsers())) or 0
     return user_count
+
+def support_jsonp(f):
+    """
+    Wraps JSONified output for JSONP
+    Copied from https://gist.github.com/aisipos/1094140
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        callback = request.args.get('callback', False)
+        if callback:
+            content = str(callback) + '(' + str(f(*args,**kwargs).data) + ')'
+            return current_app.response_class(content, mimetype='application/javascript')
+        else:
+            return f(*args, **kwargs)
+    return decorated_function

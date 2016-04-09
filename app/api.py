@@ -12,7 +12,8 @@ from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
-from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
+from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, support_jsonp
+from app.cvp import cvp_chan_to_dict
 
 import Murmur
 
@@ -526,9 +527,49 @@ class StatsView(FlaskView):
         # https://github.com/mitsuhiko/flask/issues/170
         return Response(json.dumps(stats, sort_keys=True, indent=4), mimetype='application/json')
 
+class CVPView(FlaskView):
+    """
+    View for display CVP on servers where it is enabled.
+    """
+
+    @support_jsonp
+    @route('<int:id>', methods=['GET'])
+    def cvp(self, id):
+        server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        allowed = bool(get_server_conf(meta, server, 'x_cvp'))
+        if not allowed:
+            return jsonify(message="CVP Disabled"), 403
+
+        # Fetch tree from server
+        tree = server.getTree()
+
+        # Get server properties relevant to CVP
+        rname = get_server_conf(meta, server, 'registername')
+        rhost = get_server_conf(meta, server, 'registerhostname')
+        port = get_server_port(meta, server)
+
+        # Build the CVP object
+        cvp = {
+            "root": cvp_chan_to_dict(tree),
+            "name": rname if rname != '' else 'Root',
+            "x_uptime": server.getUptime(),
+            "id": server.id()
+        }
+
+        if rhost != '':
+            cvp['x_connecturl'] = "mumble://%s:%d/?version=1.2.0" % (rhost, port)
+
+        return Response(json.dumps(cvp, sort_keys=True, indent=4), mimetype='application/json')
+
 # Register views
 ServersView.register(app)
 StatsView.register(app)
+CVPView.register(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
