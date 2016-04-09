@@ -40,6 +40,9 @@ idata.properties = props
 # Create Ice connection
 ice = Ice.initialize(idata)
 proxy = ice.stringToProxy(settings.ICE_HOST.encode('ascii'))
+secret = settings.ICE_SECRET.encode('ascii')
+if secret != '':
+	ice.getImplicitContext().put("secret", secret)
 meta = Murmur.MetaPrx.checkedCast(proxy)
 
 # Load route endpoints
