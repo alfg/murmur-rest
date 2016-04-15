@@ -15,17 +15,18 @@ Murmur-REST is still in early development. If you find any issues or would like 
 | Endpoint | Description |
 | ---- | --------------- |
 | GET /servers/ | Get server list |
-| GET /servers/:serverid/ | Get server details |
-| POST /servers/:serverid/ | Create server |
-| DELETE /servers/:serverid/ | Delete server |
+| POST /servers/ | Create a new server, starts it, and returns details |
+| GET /servers/:serverid | Get server details |
+| POST /servers/:serverid/start | Start server |
+| POST /servers/:serverid/stop | Stop server |
+| DELETE /servers/:serverid | Delete server |
 | DELETE /servers/delete?id=1,2,3 | Delete multiple servers |
-| GET /server/:serverid/logs/ | Get server logs
-| GET /server/:serverid/channels/ | Get server channels
-| GET /server/:serverid/channels/:channelid/ | Get server channel details
-| GET /server/:serverid/bans/ | Get list of banned users
-| GET /server/:serverid/conf/ | Get server configuration for specified id
-| GET /server/:serverid/channels/:channelid/acl/ | Get ACL list for channel ID
-| POST /server/:serverid/setsuperuserpw/ | Sets SuperUser password
+| GET /servers/:serverid/logs | Get server logs |
+| GET /servers/:serverid/bans | Get list of banned users |
+| GET /servers/:serverid/conf | Get server configuration for specified id |
+| POST /servers/:serverid/conf?key=users&value=100 | Set configuration variable 'users' to 100 |
+| POST /server/:serverid/sendmessage | Send a message to all channels in a server |
+| POST /server/:serverid/setsuperuserpw | Sets SuperUser password |
 
 #### Stats
 
@@ -37,9 +38,19 @@ Murmur-REST is still in early development. If you find any issues or would like 
 
 | Endpoint | Description |
 | ---- | --------------- |
-| GET /server/:serverid/user/:userid | Get User |
-| POST /server/:serverid/user | Create User, formdata:  username&password |
-| DELETE /server/:serverid/user/:userid | Delete User |
+| GET /servers/:serverid/user/:userid | Get User |
+| POST /servers/:serverid/user | Create User, formdata:  username&password |
+| DELETE /servers/:serverid/user/:userid | Delete User |
+| POST /servers/:serverid/kickuser?usersession=1 | Kick user with session #1 |
+
+#### Channels
+
+| Endpoint | Description |
+| ---- | --------------- |
+| GET /servers/:serverid/channels | Get all channels in a server |
+| GET /servers/:serverid/channels/:channelid | Get a channel from a server by ID |
+| GET /servers/:serverid/channels/:channelid/acl | Get ACL list for channel ID |
+
 
 ### Development Setup
 
@@ -133,7 +144,6 @@ free to suggest any corrections
 
 ### TODO
 
-- Authentication
 - Complete support for full Murmur SLICE API
 - Easier deployment for production
 - Documentation
