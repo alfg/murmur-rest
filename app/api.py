@@ -350,13 +350,13 @@ class ServersView(FlaskView):
         """ Gets all channels in server
         """
 
-        server = meta.getServer(id)
+        server = meta.getServer(int(id))
 
         # Return 404 if not found
         if server is None:
             return jsonify(message="Not Found"), 404
 
-        data = obj_to_dict(server.getChannelState(channel_id))
+        data = obj_to_dict(server.getChannelState(int(channel_id)))
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
