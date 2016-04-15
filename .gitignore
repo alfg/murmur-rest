@@ -27,6 +27,9 @@ pip-log.txt
 .tox
 nosetests.xml
 
+# Configuration file
+settings.py
+
 # Translations
 *.mo
 
@@ -37,3 +40,6 @@ nosetests.xml
 .idea
 *.pyc
 env
+
+# Editor backups
+*~

@@ -66,6 +66,7 @@ pip install -r requirements.txt
 3) Run and test application
 
 ```
+$ cp settings.py.example settings.py
 $ python runserver.py
  * Running on http://0.0.0.0:5000/
  * Restarting with reloader
