@@ -409,7 +409,21 @@ class ServersView(FlaskView):
             server.setConf(key, value)
             return jsonify(message="Configuration updated.")
         else:
-            return jsonify(message="Configuration key and value required.")
+            server = meta.getServer(id)
+
+            # Return 404 if not found
+            if server is None:
+                return jsonify(message="Not Found"), 404
+
+            count = 0
+            for key, val in request.form.items():
+                count += 1
+                server.setConf(key, val)
+
+            if count > 0:
+                return jsonify(message="Configuration updated: %d values." % count)
+            else:
+                return jsonify(message="Configuration key and value required.")
 
     @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels/<channel_id>/acl', methods=['GET'])
