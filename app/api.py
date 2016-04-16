@@ -347,7 +347,7 @@ class ServersView(FlaskView):
     @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels/<channel_id>', methods=['GET'])
     def channel(self, id, channel_id):
-        """ Gets all channels in server
+        """ Gets a specific channel from a server
         """
 
         server = meta.getServer(int(id))
@@ -393,7 +393,7 @@ class ServersView(FlaskView):
     @conditional(auth.login_required, auth_enabled)
     @route('<int:id>/conf', methods=['POST'])
     def set_conf(self, id):
-        """ Sends a message to all channels in a server
+        """ Change a configuration variable on a server.
         """
 
         key = request.form.get('key')
