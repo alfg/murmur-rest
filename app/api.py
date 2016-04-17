@@ -132,12 +132,7 @@ class ServersView(FlaskView):
         # Start server
         server.start()
 
-        # Format to JSON
-        json_data = {
-            'id': server.id()
-        }
-
-        return jsonify(json_data)
+        return self.get(server.id())
 
     @conditional(auth.login_required, auth_enabled)
     def delete(self, id):
