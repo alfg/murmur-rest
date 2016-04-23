@@ -19,5 +19,6 @@ ADD ./etc/supervisord.conf /etc/supervisord.conf
 ADD . /opt
 
 WORKDIR /opt
+RUN mv settings.py.sample settings.py
 
 CMD ["/usr/bin/supervisord"]
