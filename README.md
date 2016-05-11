@@ -38,6 +38,7 @@ Murmur-REST is still in early development. If you find any issues or would like 
 
 | Endpoint | Description |
 | ---- | --------------- |
+| GET /servers/:serverid/user | Get all users in a server |
 | GET /servers/:serverid/user/:userid | Get User |
 | POST /servers/:serverid/user | Create User, formdata:  username&password |
 | DELETE /servers/:serverid/user/:userid | Delete User |
