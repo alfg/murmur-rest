@@ -231,7 +231,7 @@ class ServersView(FlaskView):
         """ Gets all server logs by server ID
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -247,12 +247,12 @@ class ServersView(FlaskView):
         return Response(json.dumps(logs, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/user/<user>', methods=['DELETE'])
+    @route('<int:id>/user/<user>', methods=['DELETE'])
     def user_del_user(self, id, user):
         """ Deletes user
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -273,12 +273,12 @@ class ServersView(FlaskView):
 
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/user', methods=['POST'])
+    @route('<int:id>/user', methods=['POST'])
     def user_new_user(self, id):
         """ Creates user
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -304,12 +304,12 @@ class ServersView(FlaskView):
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/user/<user>', methods=['GET'])
+    @route('<int:id>/user/<user>', methods=['GET'])
     def register_user(self, id, user):
         """ Gets registered user by ID
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -324,12 +324,12 @@ class ServersView(FlaskView):
         }
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
-    @route('<id>/user', methods=['GET'])
+    @route('<int:id>/user', methods=['GET'])
     def users(self, id):
         """ Gets all users on server
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -340,12 +340,12 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/channels', methods=['POST'])
+    @route('<int:id>/channels', methods=['POST'])
     def channel_new_channel(self, id):
         """ Creates channel
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -361,12 +361,12 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/channels/<channel>', methods=['DELETE'])
+    @route('<int:id>/channels/<channel>', methods=['DELETE'])
     def channel_del_channel(self, id, channel):
         """ Deletes channel
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -386,12 +386,12 @@ class ServersView(FlaskView):
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/channels', methods=['GET'])
+    @route('<int:id>/channels', methods=['GET'])
     def channels(self, id):
         """ Gets all channels in server
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -402,12 +402,12 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/channels/<channel_id>', methods=['GET'])
+    @route('<int:id>/channels/<channel_id>', methods=['GET'])
     def channel(self, id, channel_id):
         """ Gets a specific channel from a server
         """
 
-        server = meta.getServer(int(id))
+        server = meta.getServer(id)
 
         # Return 404 if not found
         if server is None:
@@ -418,7 +418,7 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/bans', methods=['GET'])
+    @route('<int:id>/bans', methods=['GET'])
     def bans(self, id):
         """ Gets all banned IPs in server
         """
@@ -483,7 +483,7 @@ class ServersView(FlaskView):
                 return jsonify(message="Configuration key and value required.")
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<id>/channels/<channel_id>/acl', methods=['GET'])
+    @route('<int:id>/channels/<channel_id>/acl', methods=['GET'])
     def channel_acl(self, id, channel_id):
         """ Gets all channel ACLs in server
         """
