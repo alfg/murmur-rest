@@ -340,6 +340,27 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
+    @route('<id>/channels', methods=['POST'])
+    def channel_new_channel(self, id):
+        """ Creates channel
+        """
+
+        server = meta.getServer(int(id))
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        name = request.form.get('name')
+        parent = request.form.get('parent')
+
+        added = server.addChannel(name, int(parent))
+
+        data = obj_to_dict(server.getChannelState(int(added)))
+
+        return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels', methods=['GET'])
     def channels(self, id):
         """ Gets all channels in server

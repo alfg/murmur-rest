@@ -50,6 +50,7 @@ Murmur-REST is still in early development. If you find any issues or would like 
 | ---- | --------------- |
 | GET /servers/:serverid/channels | Get all channels in a server |
 | GET /servers/:serverid/channels/:channelid | Get a channel from a server by ID |
+| POST /servers/:serverid/channels | Create Channel, formdata:  name&parent |
 | GET /servers/:serverid/channels/:channelid/acl | Get ACL list for channel ID |
 
 
