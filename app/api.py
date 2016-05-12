@@ -324,6 +324,21 @@ class ServersView(FlaskView):
         }
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
+    @route('<id>/user', methods=['GET'])
+    def users(self, id):
+        """ Gets all users on server
+        """
+
+        server = meta.getServer(int(id))
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        data = obj_to_dict(server.getUsers())
+
+        return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
+
     @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels', methods=['GET'])
     def channels(self, id):
@@ -573,4 +588,3 @@ CVPView.register(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
