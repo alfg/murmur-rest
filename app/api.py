@@ -361,6 +361,31 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
+    @route('<id>/channels/<channel>', methods=['DELETE'])
+    def channel_del_channel(self, id, channel):
+        """ Deletes channel
+        """
+
+        server = meta.getServer(int(id))
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="No Server Found for ID " + str(id)), 500
+
+        oldchannel = server.getRegistration(int(channel))
+
+        if oldchannel is None:
+            return jsonify(message="No Channel Found for ID " + str(channel)), 500
+
+        server.removeChannel(int(channel))
+
+        json_data = {
+            "channel_id": channel,
+            "deleted": 'Success'
+        }
+        return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
     @route('<id>/channels', methods=['GET'])
     def channels(self, id):
         """ Gets all channels in server
