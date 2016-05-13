@@ -402,7 +402,7 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<int:id>/channels/<channel_id>', methods=['GET'])
+    @route('<int:id>/channels/<int:channel_id>', methods=['GET'])
     def channel(self, id, channel_id):
         """ Gets a specific channel from a server
         """
@@ -413,7 +413,7 @@ class ServersView(FlaskView):
         if server is None:
             return jsonify(message="Not Found"), 404
 
-        data = obj_to_dict(server.getChannelState(int(channel_id)))
+        data = obj_to_dict(server.getChannelState(channel_id))
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
@@ -483,7 +483,7 @@ class ServersView(FlaskView):
                 return jsonify(message="Configuration key and value required.")
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<int:id>/channels/<channel_id>/acl', methods=['GET'])
+    @route('<int:id>/channels/<int:channel_id>/acl', methods=['GET'])
     def channel_acl(self, id, channel_id):
         """ Gets all channel ACLs in server
         """
