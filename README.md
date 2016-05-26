@@ -43,6 +43,8 @@ Murmur-REST is still in early development. If you find any issues or would like 
 | POST /servers/:serverid/user | Create User, formdata:  username&password |
 | DELETE /servers/:serverid/user/:userid | Delete User |
 | POST /servers/:serverid/kickuser?usersession=1 | Kick user with session #1 |
+| POST /servers/:serverid/user/:userid/mute | Mute User |
+| POST /servers/:serverid/user/:userid/unmute | Unmute User |
 
 #### Channels
 
