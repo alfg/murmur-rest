@@ -25,8 +25,8 @@ Murmur-REST is still in early development. If you find any issues or would like 
 | GET /servers/:serverid/bans | Get list of banned users |
 | GET /servers/:serverid/conf | Get server configuration for specified id |
 | POST /servers/:serverid/conf?key=users&value=100 | Set configuration variable 'users' to 100 |
-| POST /server/:serverid/sendmessage | Send a message to all channels in a server. formdata: message |
-| POST /server/:serverid/setsuperuserpw | Sets SuperUser password. formdata: password |
+| POST /servers/:serverid/sendmessage | Send a message to all channels in a server. formdata: message |
+| POST /servers/:serverid/setsuperuserpw | Sets SuperUser password. formdata: password |
 
 #### Stats
 
