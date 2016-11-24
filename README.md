@@ -2,7 +2,7 @@
 
 ### Overview
 
-Murmur-REST is a RESTful web application wrapper over the Murmur SLICE API to administer virtual Mumble servers. The API allows you to develop your own application using the feature set and endpoints provided. This project was built to administer Mumble servers for [Guildbit.com](http://guildbit.com). 
+Murmur-REST is a RESTful web application wrapper over the Murmur SLICE API to administer virtual Mumble servers. The API allows you to develop your own application using the feature set and endpoints provided. This project was built to administer Mumble servers for [Guildbit.com](http://guildbit.com).
 
 Murmur-REST is still in early development. If you find any issues or would like to help contribute to the project, please report them via Github issues or send a pull request.
 
@@ -62,7 +62,7 @@ Murmur-REST is still in early development. If you find any issues or would like 
 Assuming you already have Murmur running and set up, follow the instructions below to run murmur-rest
 for development. Tested on Ubuntu 13.10, but should be to run wherever Murmur and Zero Ice are supported.
 
-Runserver.py uses Flask's development server. This should be used for development only. See 
+Runserver.py uses Flask's development server. This should be used for development only. See
 Deployment for Production for running in production mode. Python virtualenv is highly recommended as well.
 
 1) Install required Zero Ice library
@@ -86,7 +86,7 @@ $ cp settings.py.example settings.py
 $ python runserver.py
  * Running on http://0.0.0.0:5000/
  * Restarting with reloader
- 
+
 $ curl http://127.0.0.1:5000/servers/
 [
     {
@@ -109,17 +109,19 @@ $ curl http://127.0.0.1:5000/servers/
 
 A Dockerfile is provided to easily setup a local development setup. Install [Docker](https://docs.docker.com/engine/installation/) and run the following commands:
 
-* Build the image:
+* Pull docker image and run:
 ```
-cd /path/to/murmur-rest
+docker pull alfg/murmur-rest
+docker run -it -p 5000:5000 --rm murmur-rest
+```
+
+or
+
+* Build and run container from source:
+```
+git clone https://github.com/alfg/murmur-rest
 docker build -t murmur-rest .
-```
-
-This will build the image and pull in all dependencies to run the application, including murmur.
-
-* Run container:
-```
-docker run -p 5000:5000 -t -i murmur-rest
+docker run -it -p 5000:5000 --rm murmur-rest
 ```
 
 * Load `http://{VM IP}:5000/servers/` into the browser to test.
