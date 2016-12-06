@@ -144,9 +144,9 @@ For example, if using Gunicorn and virtualenv:
 ### TODO
 
 - Complete support for full Murmur SLICE API
-- Easier deployment for production
-- Documentation
+- API Documentation
 - Error Handling
+- Tests
 
 ### Resources
 - [Murmur SLICE API](http://mumble.sourceforge.net/slice/Murmur.html)
