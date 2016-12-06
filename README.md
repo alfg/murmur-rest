@@ -141,14 +141,6 @@ For example, if using Gunicorn and virtualenv:
 /path/to/murmur-rest/env/bin/gunicorn -b 127.0.0.1:5000 wsgi:app
 ```
 
-### Notes
-
-- Early development. Expect changes that might break the first revision of the RESTful API
-- API is incomplete and will be completed over time
-- I'm following the RESTful API specification and standards as closely as I can (with some exceptions), please feel
-free to suggest any corrections
-- Murmur SLICE API is located here: http://mumble.sourceforge.net/slice/Murmur.html
-
 ### TODO
 
 - Complete support for full Murmur SLICE API
@@ -158,10 +150,6 @@ free to suggest any corrections
 
 ### Resources
 - [Murmur SLICE API](http://mumble.sourceforge.net/slice/Murmur.html)
-- RESTful design resources:
-    - https://github.com/WhiteHouse/api-standards
-    - http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api
-    - http://mark-kirby.co.uk/2013/creating-a-true-rest-api/
 
 ### License
 
