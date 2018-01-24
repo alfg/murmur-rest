@@ -87,6 +87,7 @@ def get_all_users_count(meta):
         user_count += (s.isRunning() and len(s.getUsers())) or 0
     return user_count
 
+
 def support_jsonp(f):
     """
     Wraps JSONified output for JSONP
@@ -96,7 +97,7 @@ def support_jsonp(f):
     def decorated_function(*args, **kwargs):
         callback = request.args.get('callback', False)
         if callback:
-            content = str(callback) + '(' + str(f(*args,**kwargs).data) + ')'
+            content = str(callback) + '(' + str(f(*args, **kwargs).data) + ')'
             return current_app.response_class(content, mimetype='application/javascript')
         else:
             return f(*args, **kwargs)

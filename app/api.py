@@ -616,7 +616,6 @@ class ServersView(FlaskView):
         else:
             return jsonify(message="User session required.")
 
-
     def get_user(self, server, userid):
         # TODO: This is really non-scalable as the number of users on the server grows
         #       Find a better way to get a user by userid from mumble
@@ -649,6 +648,7 @@ class StatsView(FlaskView):
         # Workaround response due to jsonify() not allowing top-level json response
         # https://github.com/mitsuhiko/flask/issues/170
         return Response(json.dumps(stats, sort_keys=True, indent=4), mimetype='application/json')
+
 
 class CVPView(FlaskView):
     """
@@ -688,6 +688,7 @@ class CVPView(FlaskView):
             cvp['x_connecturl'] = "mumble://%s:%d/?version=1.2.0" % (rhost, port)
 
         return Response(json.dumps(cvp, sort_keys=True, indent=4), mimetype='application/json')
+
 
 # Register views
 ServersView.register(app)
