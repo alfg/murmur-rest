@@ -6,7 +6,7 @@ Utilities used within the application.
 :license:   MIT, see README for more details.
 """
 
-from builtins import str
+from builtins import int
 from builtins import object
 from flask import request, current_app
 from functools import wraps
@@ -46,7 +46,7 @@ def obj_to_dict(obj):
     """
     rv = {'_type': str(type(obj))}
 
-    if type(obj) in (bool, int, float, str):
+    if isinstance(obj, (bool, int, float, str)):
         return obj
 
     if type(obj) in (list, tuple):
