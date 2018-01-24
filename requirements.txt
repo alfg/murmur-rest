@@ -1,3 +1,4 @@
 Flask==0.12.2
 Flask-Classful==0.14.1
 Flask-HTTPAuth==3.2.3
+future==0.16.0; python_version < '3.0'
