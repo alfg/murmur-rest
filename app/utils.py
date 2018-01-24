@@ -6,6 +6,8 @@ Utilities used within the application.
 :license:   MIT, see README for more details.
 """
 
+from builtins import str
+from builtins import object
 from flask import request, current_app
 from functools import wraps
 
@@ -44,14 +46,14 @@ def obj_to_dict(obj):
     """
     rv = {'_type': str(type(obj))}
 
-    if type(obj) in (bool, int, long, float, str, unicode):
+    if type(obj) in (bool, int, float, str):
         return obj
 
     if type(obj) in (list, tuple):
         return [obj_to_dict(item) for item in obj]
 
     if type(obj) == dict:
-        return dict((str(k), obj_to_dict(v)) for k, v in obj.iteritems())
+        return dict((str(k), obj_to_dict(v)) for k, v in obj.items())
 
     return obj_to_dict(obj.__dict__)
 

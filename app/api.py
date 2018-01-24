@@ -6,6 +6,8 @@ All API route endpoints
 :license:   MIT, see README for more details.
 """
 
+from builtins import map
+from builtins import str
 from datetime import timedelta
 
 from flask import request, jsonify, json, Response
@@ -61,7 +63,7 @@ class ServersView(FlaskView):
         Lists server details
         """
 
-        id = long(id)
+        id = int(id)
         s = meta.getServer(id)
 
         # Return 404 if not found
@@ -166,7 +168,7 @@ class ServersView(FlaskView):
         if not id:
             return jsonify(message="No servers to delete.")
 
-        ids = map(int, id.split(","))
+        ids = list(map(int, id.split(",")))
 
         # Delete each server.
         for i in ids:
@@ -526,7 +528,7 @@ class ServersView(FlaskView):
                 return jsonify(message="Not Found"), 404
 
             count = 0
-            for key, val in request.form.items():
+            for key, val in list(request.form.items()):
                 count += 1
                 server.setConf(key, val)
 
@@ -620,7 +622,7 @@ class ServersView(FlaskView):
         # TODO: This is really non-scalable as the number of users on the server grows
         #       Find a better way to get a user by userid from mumble
         try:
-            return [u for u in server.getUsers().values() if u.userid == int(userid)][0]
+            return [u for u in list(server.getUsers().values()) if u.userid == int(userid)][0]
         except (ValueError, IndexError):
             return None
 

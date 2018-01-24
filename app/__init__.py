@@ -8,6 +8,7 @@ Initialize murmur-rest project.
 :license:   MIT, see README for more details.
 """
 
+from builtins import str
 import os
 
 from flask import Flask
@@ -40,8 +41,8 @@ idata.properties = props
 
 # Create Ice connection
 ice = Ice.initialize(idata)
-proxy = ice.stringToProxy(settings.ICE_HOST.encode('ascii'))
-secret = settings.ICE_SECRET.encode('ascii')
+proxy = ice.stringToProxy(settings.ICE_HOST)
+secret = settings.ICE_SECRET
 if secret != '':
     ice.getImplicitContext().put("secret", secret)
 meta = Murmur.MetaPrx.checkedCast(proxy)
