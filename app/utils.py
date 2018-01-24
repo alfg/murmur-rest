@@ -70,7 +70,7 @@ def get_server_port(meta, server, val=None):
     """
     Gets the server port value from configuration.
     """
-    val = server.getConf('port') if val == None else val
+    val = server.getConf('port') if val is None else val
 
     if '' == val:
         val = meta.getDefaultConf().get('port', 0)
