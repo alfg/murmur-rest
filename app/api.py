@@ -621,7 +621,7 @@ class ServersView(FlaskView):
         #       Find a better way to get a user by userid from mumble
         try:
             return [u for u in server.getUsers().values() if u.userid == int(userid)][0]
-        except ValueError, IndexError:
+        except (ValueError, IndexError):
             return None
 
 
