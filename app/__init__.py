@@ -11,7 +11,7 @@ Initialize murmur-rest project.
 import os
 
 from flask import Flask
-from flask.ext.httpauth import HTTPDigestAuth
+from flask_httpauth import HTTPDigestAuth
 import settings
 
 import Ice

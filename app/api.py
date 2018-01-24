@@ -9,7 +9,7 @@ All API route endpoints
 from datetime import timedelta
 
 from flask import request, jsonify, json, Response
-from flask.ext.classful import FlaskView, route
+from flask_classful import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
 from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, support_jsonp
