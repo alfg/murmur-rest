@@ -8,7 +8,6 @@ Initialize murmur-rest project.
 :license:   MIT, see README for more details.
 """
 
-from builtins import str
 import os
 
 from flask import Flask
