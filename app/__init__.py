@@ -11,7 +11,7 @@ Initialize murmur-rest project.
 import os
 
 from flask import Flask
-from flask.ext.httpauth import HTTPDigestAuth
+from flask_httpauth import HTTPDigestAuth
 import settings
 
 import Ice
@@ -40,10 +40,10 @@ idata.properties = props
 
 # Create Ice connection
 ice = Ice.initialize(idata)
-proxy = ice.stringToProxy(settings.ICE_HOST.encode('ascii'))
-secret = settings.ICE_SECRET.encode('ascii')
+proxy = ice.stringToProxy(settings.ICE_HOST)
+secret = settings.ICE_SECRET
 if secret != '':
-	ice.getImplicitContext().put("secret", secret)
+    ice.getImplicitContext().put("secret", secret)
 meta = Murmur.MetaPrx.checkedCast(proxy)
 
 # Load route endpoints

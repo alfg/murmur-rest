@@ -6,10 +6,12 @@ All API route endpoints
 :license:   MIT, see README for more details.
 """
 
+from builtins import map
+from builtins import str
 from datetime import timedelta
 
 from flask import request, jsonify, json, Response
-from flask.ext.classy import FlaskView, route
+from flask_classful import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
 from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, support_jsonp
@@ -61,7 +63,7 @@ class ServersView(FlaskView):
         Lists server details
         """
 
-        id = long(id)
+        id = int(id)
         s = meta.getServer(id)
 
         # Return 404 if not found
@@ -166,7 +168,7 @@ class ServersView(FlaskView):
         if not id:
             return jsonify(message="No servers to delete.")
 
-        ids = map(int, id.split(","))
+        ids = list(map(int, id.split(",")))
 
         # Delete each server.
         for i in ids:
@@ -526,7 +528,7 @@ class ServersView(FlaskView):
                 return jsonify(message="Not Found"), 404
 
             count = 0
-            for key, val in request.form.items():
+            for key, val in list(request.form.items()):
                 count += 1
                 server.setConf(key, val)
 
@@ -616,13 +618,12 @@ class ServersView(FlaskView):
         else:
             return jsonify(message="User session required.")
 
-
     def get_user(self, server, userid):
         # TODO: This is really non-scalable as the number of users on the server grows
         #       Find a better way to get a user by userid from mumble
         try:
-            return [u for u in server.getUsers().values() if u.userid == int(userid)][0]
-        except ValueError, IndexError:
+            return [u for u in list(server.getUsers().values()) if u.userid == int(userid)][0]
+        except (ValueError, IndexError):
             return None
 
 
@@ -649,6 +650,7 @@ class StatsView(FlaskView):
         # Workaround response due to jsonify() not allowing top-level json response
         # https://github.com/mitsuhiko/flask/issues/170
         return Response(json.dumps(stats, sort_keys=True, indent=4), mimetype='application/json')
+
 
 class CVPView(FlaskView):
     """
@@ -688,6 +690,7 @@ class CVPView(FlaskView):
             cvp['x_connecturl'] = "mumble://%s:%d/?version=1.2.0" % (rhost, port)
 
         return Response(json.dumps(cvp, sort_keys=True, indent=4), mimetype='application/json')
+
 
 # Register views
 ServersView.register(app)
