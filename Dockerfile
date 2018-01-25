@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 EXPOSE 5000
 
@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y build-essential mumble-server superviso
 
 # Build Python app
 RUN apt-get install -y python python-pip python-zeroc-ice
+RUN pip install -U pip
 ADD requirements.txt /opt/requirements.txt
 RUN cd /opt && pip install -r requirements.txt
 
@@ -20,5 +21,8 @@ ADD . /opt
 
 WORKDIR /opt
 RUN mv settings.py.example settings.py
+
+# Mumble ports.
+EXPOSE 50000
 
 CMD ["/usr/bin/supervisord"]
