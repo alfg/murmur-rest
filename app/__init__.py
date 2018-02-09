@@ -11,7 +11,7 @@ Initialize murmur-rest project.
 import os
 
 from flask import Flask
-from flask_httpauth import HTTPDigestAuth
+from flask_httpauth import HTTPBasicAuth
 import settings
 
 import Ice
@@ -20,10 +20,10 @@ import Ice
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 
-# Initialize Digest Auth
-auth = HTTPDigestAuth()
+# Initialize Basic Auth
+auth = HTTPBasicAuth()
 
-# If enabled, all endpoints will be digest auth protected
+# If enabled, all endpoints will be basic auth protected
 auth_enabled = settings.ENABLE_AUTH
 
 # Load up Murmur slice file into Ice

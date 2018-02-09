@@ -1,7 +1,7 @@
 """
 settings.py
 
-All default settings. No configuration required, unless you want to enable digest authentication.
+All default settings. No configuration required, unless you want to enable basic authentication.
 
 :copyright: (C) 2014 by github.com/alfg.
 :license:   MIT, see README for more details.
@@ -23,7 +23,7 @@ SLICE_FILE = 'Murmur.ice'
 # Default path of application
 MURMUR_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# Digest Authentication. Add users as necessary.
+# Basic Authentication. Add users as necessary.
 ENABLE_AUTH = False  # If enabled, add user credentials below
 USERS = {
     "admin": "password",
