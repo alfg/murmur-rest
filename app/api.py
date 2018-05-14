@@ -427,11 +427,6 @@ class ServersView(FlaskView):
         if server is None:
             return jsonify(message="No Server Found for ID " + str(id)), 500
 
-        oldchannel = server.getRegistration(int(channel))
-
-        if oldchannel is None:
-            return jsonify(message="No Channel Found for ID " + str(channel)), 500
-
         server.removeChannel(int(channel))
 
         json_data = {
