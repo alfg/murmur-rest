@@ -359,6 +359,39 @@ class ServersView(FlaskView):
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/user/<int:userid>/update', methods=['POST'])
+    def user_update_user(self, id, userid):
+        """ Updates a user by ID
+        """
+
+        server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        user = self.get_user(server, userid)
+        if user is None:
+            return jsonify(message="User Not Found"), 404
+
+        username = request.form.get('username')
+        if username is None:
+            return jsonify(message="Username required"), 400
+
+        updated_user = {
+            Murmur.UserInfo.UserName: username
+        }
+
+        server.updateRegistration(user.userid, updated_user)
+
+        json_data = {
+            "user_id": user.userid,
+            "username": username,
+            "updated": "Success"
+        }
+        return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
     @route('<int:id>/user/<user>', methods=['GET'])
     def register_user(self, id, user):
         """ Gets registered user by ID
