@@ -4,7 +4,7 @@
 
 Murmur-REST is a RESTful web application wrapper over the Murmur SLICE API to administer virtual Mumble servers. The API allows you to develop your own application using the feature set and endpoints provided. This project was built to administer Mumble servers for [Guildbit.com](http://guildbit.com).
 
-Murmur-REST is still in early development. If you find any issues or would like to help contribute to the project, please report them via Github issues or send a pull request.
+If you find any issues or would like to help contribute to the project, please report them via Github issues or send a pull request.
 
 **Check out my Mumble-Widget project! https://github.com/alfg/mumble-widget**
 
