@@ -1,0 +1,14 @@
+murmur-rest:
+#   image: alfg/murmur-rest
+  build: .
+  environment:
+    - APP_HOST=0.0.0.0
+    - APP_PORT=8080
+    - APP_DEBUG=True
+    - ENABLE_AUTH=True
+    - USERS=admin:password,admin2:password2
+  ports:
+    - "8080:8080"
+    - "50001-50050:50001-50050"
+  volumes:
+    - "./:/opt/murmur-rest"
