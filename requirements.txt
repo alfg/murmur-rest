@@ -2,3 +2,4 @@ Flask==1.0
 Flask-Classful==0.14.1
 Flask-HTTPAuth==3.2.3
 future==0.16.0; python_version < '3.0'
+gunicorn==19.10.0
