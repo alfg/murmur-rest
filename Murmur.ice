@@ -1,3 +1,8 @@
+// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Use of this source code is governed by a BSD-style license
+// that can be found in the LICENSE file at the root of the
+// Mumble source tree or at <https://www.mumble.info/LICENSE>.
+
 /**
  *
  * Information and control of the murmur server. Each server has
@@ -54,7 +59,19 @@ module Murmur
 		string osversion;
 		/** Plugin Identity. This will be the user's unique ID inside the current game. */
 		string identity;
-		/** Plugin context. This is a binary blob identifying the game and team the user is on. */
+		/**
+		   Base64-encoded Plugin context. This is a binary blob identifying the game and team the user is on.
+
+		   The used Base64 alphabet is the one specified in RFC 2045.
+
+		   Before Mumble 1.3.0, this string was not Base64-encoded. This could cause problems for some Ice
+		   implementations, such as the .NET implementation.
+
+		   If you need the exact string that is used by Mumble, you can get it by Base64-decoding this string.
+
+		   If you simply need to detect whether two users are in the same game world, string comparisons will
+		   continue to work as before.
+		 */
 		string context;
 		/** User comment. Shown as tooltip for this user. */
 		string comment;
@@ -206,7 +223,7 @@ module Murmur
 	sequence<Tree> TreeList;
 
 	enum ChannelInfo { ChannelDescription, ChannelPosition };
-	enum UserInfo { UserName, UserEmail, UserComment, UserHash, UserPassword, UserLastActive };
+	enum UserInfo { UserName, UserEmail, UserComment, UserHash, UserPassword, UserLastActive, UserKDFIterations };
 
 	dictionary<int, User> UserMap;
 	dictionary<int, Channel> ChannelMap;
@@ -262,6 +279,12 @@ module Murmur
 	exception InvalidCallbackException extends MurmurException {};
 	/**  This is thrown when you supply the wrong secret in the calling context. */
 	exception InvalidSecretException extends MurmurException {};
+	/** This is thrown when the channel operation would excede the channel nesting limit */
+	exception NestingLimitException extends MurmurException {};
+	/**  This is thrown when you ask the server to disclose something that should be secret. */
+	exception WriteOnlyException extends MurmurException {};
+	/** This is thrown when invalid input data was specified. */
+	exception InvalidInputDataException extends MurmurException {};
 
 	/** Callback interface for servers. You can supply an implementation of this to receive notification
 	 *  messages from the server.
@@ -323,7 +346,7 @@ module Murmur
 		 *  @param action Action to be performed.
 		 *  @param usr User which initiated the action.
 		 *  @param session If nonzero, session of target user.
-		 *  @param channelid If nonzero, session of target channel.
+		 *  @param channelid If not -1, id of target channel.
 		 */
 		idempotent void contextAction(string action, User usr, int session, int channelid);
 	};
@@ -343,6 +366,12 @@ module Murmur
 		 *  The data in the certificate (name, email addresses etc), as well as the list of signing certificates,
 		 *  should only be trusted if certstrong is true.
 		 *
+		 *  Internally, Murmur treats usernames as case-insensitive. It is recommended
+		 *  that authenticators do the same. Murmur checks if a username is in use when
+		 *  a user connects. If the connecting user is registered, the other username is
+		 *  kicked. If the connecting user is not registered, the connecting user is not
+		 *  allowed to join the server.
+		 *
 		 *  @param name Username to authenticate.
 		 *  @param pw Password to authenticate with.
 		 *  @param certificates List of der encoded certificates the user connected with.
@@ -350,7 +379,8 @@ module Murmur
 		 *  @param certstrong True if certificate was valid and signed by a trusted CA.
 		 *  @param newname Set this to change the username from the supplied one.
 		 *  @param groups List of groups on the root channel that the user will be added to for the duration of the connection.
-		 *  @return UserID of authenticated user, -1 for authentication failures and -2 for unknown user (fallthrough).
+		 *  @return UserID of authenticated user, -1 for authentication failures, -2 for unknown user (fallthrough),
+		 *          -3 for authentication failures where the data could (temporarily) not be verified.
 		 */
 		idempotent int authenticate(string name, string pw, CertificateList certificates, string certhash, bool certstrong, out string newname, out GroupNameList groups);
 
@@ -476,7 +506,7 @@ module Murmur
 		 * @param key Configuration key.
 		 * @return Configuration value. If this is empty, see {@link Meta.getDefaultConf}
 		 */
-		idempotent string getConf(string key) throws InvalidSecretException;
+		idempotent string getConf(string key) throws InvalidSecretException, WriteOnlyException;
 
 		/** Retrieve all configuration items.
 		 * @return All configured values. If a value isn't set here, the value from {@link Meta.getDefaultConf} is used.
@@ -613,7 +643,7 @@ module Murmur
 		 * @param state Channel state to set.
 		 * @see getChannelState
 		 */
-		idempotent void setChannelState(Channel state) throws ServerBootedException, InvalidChannelException, InvalidSecretException;
+		idempotent void setChannelState(Channel state) throws ServerBootedException, InvalidChannelException, InvalidSecretException, NestingLimitException;
 
 		/** Remove a channel and all its subchannels.
 		 * @param channelid ID of Channel. See {@link Channel.id}.
@@ -625,7 +655,7 @@ module Murmur
 		 * @param parent Channel ID of parent channel. See {@link Channel.id}.
 		 * @return ID of newly created channel.
 		 */
-		int addChannel(string name, int parent) throws ServerBootedException, InvalidChannelException, InvalidSecretException;
+		int addChannel(string name, int parent) throws ServerBootedException, InvalidChannelException, InvalidSecretException, NestingLimitException;
 
 		/** Send text message to channel or a tree of channels.
 		 * @param channelid Channel ID of channel to send to. See {@link Channel.id}.
@@ -737,6 +767,27 @@ module Murmur
 		 * @return Uptime of the virtual server in seconds
 		 */
 		idempotent int getUptime() throws ServerBootedException, InvalidSecretException;
+
+		/**
+		 * Update the server's certificate information.
+		 *
+		 * Reconfigure the running server's TLS socket with the given
+		 * certificate and private key.
+		 *
+		 * The certificate and and private key must be PEM formatted.
+		 *
+		 * New clients will see the new certificate.
+		 * Existing clients will continue to see the certificate the server
+		 * was using when they connected to it.
+		 *
+		 * This method throws InvalidInputDataException if any of the
+		 * following errors happen:
+		 *  - Unable to decode the PEM certificate and/or private key.
+		 *  - Unable to decrypt the private key with the given passphrase.
+		 *  - The certificate and/or private key do not contain RSA keys.
+		 *  - The certificate is not usable with the given private key.
+		 */
+		 idempotent void updateCertificate(string certificate, string privateKey, string passphrase) throws ServerBootedException, InvalidSecretException, InvalidInputDataException;
 	};
 
 	/** Callback interface for Meta. You can supply an implementation of this to receive notifications

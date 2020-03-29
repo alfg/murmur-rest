@@ -8,6 +8,9 @@ If you find any issues or would like to help contribute to the project, please r
 
 **Check out my Mumble-Widget project! https://github.com/alfg/mumble-widget**
 
+![Docker Build Status](https://img.shields.io/docker/build/alfg/murmur-rest)
+![Docker Pulls](https://img.shields.io/docker/pulls/alfg/murmur-rest)
+
 ### Endpoints
 
 #### Servers
@@ -80,7 +83,16 @@ pip install -r requirements.txt
 
 *Note*: If running in virtualenv, use the `--system-site-packages` flag in order to import the Ice library.
 
-3) Run and test application
+3) Set your environment variables:
+```
+APP_HOST=0.0.0.0
+APP_PORT=8080
+APP_DEBUG=True
+ENABLE_AUTH=True
+USERS=admin:password,admin2:password2 # Only if auth is enabled.
+```
+
+4) Run and test application
 
 ```
 $ cp settings.py.example settings.py
