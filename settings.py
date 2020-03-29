@@ -29,7 +29,3 @@ ENABLE_AUTH = os.environ.get('ENABLE_AUTH') == 'True'
 # If ENABLE_AUTH enabled, add user credentials below
 users = os.environ.get('USERS', '')
 USERS = dict(item.split(':') for item in users.split(','))
-print(USERS)
-# USERS = {
-#     "admin": "password",
-# }
