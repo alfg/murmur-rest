@@ -37,6 +37,7 @@ nosetests.xml
 .idea
 *.pyc
 env
+venv
 
 # Editor backups
 *~

@@ -83,7 +83,16 @@ pip install -r requirements.txt
 
 *Note*: If running in virtualenv, use the `--system-site-packages` flag in order to import the Ice library.
 
-3) Run and test application
+3) Set your environment variables:
+```
+APP_HOST=0.0.0.0
+APP_PORT=8080
+APP_DEBUG=True
+ENABLE_AUTH=True
+USERS=admin:password,admin2:password2 # Only if auth is enabled.
+```
+
+4) Run and test application
 
 ```
 $ cp settings.py.example settings.py
