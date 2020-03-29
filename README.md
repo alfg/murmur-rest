@@ -8,6 +8,9 @@ If you find any issues or would like to help contribute to the project, please r
 
 **Check out my Mumble-Widget project! https://github.com/alfg/mumble-widget**
 
+![Docker Build Status](https://img.shields.io/docker/build/alfg/murmur-rest)
+![Docker Pulls](https://img.shields.io/docker/pulls/alfg/murmur-rest)
+
 ### Endpoints
 
 #### Servers
