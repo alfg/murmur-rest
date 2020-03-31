@@ -15,10 +15,12 @@ APP_PORT = os.environ.get("APP_PORT", 8080)
 APP_DEBUG = os.environ.get("APP_DEBUG") == "True"
 
 # Ice connectivity
-ICE_HOST = "Meta:tcp -h localhost -p 6502"
-ICE_SECRET = os.environ.get("ICE_SECRET", "")
-ICE_MESSAGESIZE = 1024  # in KB - Ice default is 1024KB which is 1MB
-SLICE_FILE = "Murmur.ice"
+ICE_HOST_HOST = os.environ.get('MURMUR_ICE_HOST', 'localhost')
+ICE_HOST_PORT = os.environ.get('MURMUR_ICE_PORT', '6502')
+ICE_HOST = 'Meta:tcp -h ' + ICE_HOST_HOST + ' -p ' + ICE_HOST_PORT
+ICE_SECRET = os.environ.get('ICE_SECRET', '')
+ICE_MESSAGESIZE = 1024 # in KB - Ice default is 1024KB which is 1MB
+SLICE_FILE = 'Murmur.ice'
 
 # Default path of application
 MURMUR_ROOT = os.path.dirname(os.path.abspath(__file__))
