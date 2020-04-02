@@ -90,6 +90,8 @@ APP_PORT=8080
 APP_DEBUG=True
 ENABLE_AUTH=True
 USERS=admin:password,admin2:password2 # Only if auth is enabled.
+MURMUR_ICE_HOST=localhost
+MURMUR_ICE_PORT=6502
 ```
 
 4) Run and test application
