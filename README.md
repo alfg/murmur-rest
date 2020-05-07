@@ -99,10 +99,10 @@ MURMUR_ICE_PORT=6502
 ```
 $ cp settings.py.example settings.py
 $ python runserver.py
- * Running on http://0.0.0.0:5000/
+ * Running on http://0.0.0.0:8080/
  * Restarting with reloader
 
-$ curl http://127.0.0.1:5000/servers/
+$ curl http://127.0.0.1:8080/servers/
 [
     {
         "address": ":::64739",
@@ -127,7 +127,7 @@ A Dockerfile is provided to easily setup a local development setup. Install [Doc
 * Pull docker image and run:
 ```
 docker pull alfg/murmur-rest
-docker run -it -p 5000:5000 --rm murmur-rest
+docker run -it -p 8080:8080 --rm alfg/murmur-rest
 ```
 
 or
@@ -136,10 +136,10 @@ or
 ```
 git clone https://github.com/alfg/murmur-rest
 docker build -t murmur-rest .
-docker run -it -p 5000:5000 --rm murmur-rest
+docker run -it -p 8080:8080 --rm murmur-rest
 ```
 
-* Load `http://{VM IP}:5000/servers/` into the browser to test.
+* Load `http://{VM IP}:8080/servers/` into the browser to test.
 If you're unsure what your Docker VM's host is, just run `docker-machine ls` to check.
 
 
@@ -153,7 +153,7 @@ file is provided for this.
 For example, if using Gunicorn and virtualenv:
 
 ```
-/path/to/murmur-rest/env/bin/gunicorn -b 127.0.0.1:5000 wsgi:app
+/path/to/murmur-rest/env/bin/gunicorn -b 127.0.0.1:8080 wsgi:app
 ```
 
 ### TODO
