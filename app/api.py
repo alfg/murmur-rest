@@ -473,11 +473,11 @@ class ServersView(FlaskView):
         temporary = request.form.get('temporary')
 
         if name is not None:
-            channel.name = name.encode('utf-8')
+            channel.name = str(name)
         if parent is not None:
             channel.parent = int(parent)
         if description is not None:
-            channel.description = description.encode('utf-8')
+            channel.description = str(description)
         if links is not None:
             for idx in range(len(links)):
                 links[idx] = int(links[idx])
@@ -489,7 +489,7 @@ class ServersView(FlaskView):
 
         server.setChannelState(channel)
 
-        data = obj_to_dict(channel)
+        data = obj_to_dict(server.getChannelState(channel_id))
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
@@ -646,30 +646,14 @@ class ServersView(FlaskView):
         if params['acls'] is not None:
             new_acls = []
                 for props in params['acls']:
-                    new_acls.append(Murmur.ACL(
-                        props['applyHere'],
-                        props['applySubs'],
-                        props['inherited'],
-                        props['userid'],
-                        props['group'],
-                        props['allow'],
-                        props['deny']
-                        ))
+                    new_acls.append(Murmur.ACL(props['applyHere'], props['applySubs'], props['inherited'], props['userid'], props['group'], props['allow'], props['deny']))
 
                     update_acls = new_acls
 
         if params['groups'] is not None:
             new_groups = []
                 for props in params['groups']:
-                    new_groups.append(Murmur.Group(
-                        props['name'],
-                        props['inherited'],
-                        props['inherit'],
-                        props['inheritable'],
-                        props['add'],
-                        props['remove'],
-                        props['members']
-                        ))
+                    new_groups.append(Murmur.Group(props['name'], props['inherited'], props['inherit'], props['inheritable'], props['add'], props['remove'], props['members']))
 
                     update_groups = new_groups
 
