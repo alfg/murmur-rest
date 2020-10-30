@@ -64,10 +64,10 @@ If you find any issues or would like to help contribute to the project, please r
 ### Development Setup
 
 Assuming you already have Murmur running and set up, follow the instructions below to run murmur-rest
-for development. Tested on Ubuntu 13.10, but should be to run wherever Murmur and Zero Ice are supported.
+for development. Tested on Ubuntu 18.04, but should be to run wherever Murmur and Zero Ice are supported.
 
 Runserver.py uses Flask's development server. This should be used for development only. See
-Deployment for Production for running in production mode. Python virtualenv is highly recommended as well.
+Deployment for Production for running in production mode. Python `venv` is highly recommended as well.
 
 1) Install required Zero Ice library
 
@@ -81,7 +81,7 @@ cd /directory/to/murmur-rest
 pip install -r requirements.txt
 ```
 
-*Note*: If running in virtualenv, use the `--system-site-packages` flag in order to import the Ice library.
+*Note*: If running in venv, use the `--system-site-packages` flag in order to import the Ice library.
 
 3) Set your environment variables:
 ```
@@ -97,12 +97,11 @@ MURMUR_ICE_PORT=6502
 4) Run and test application
 
 ```
-$ cp settings.py.example settings.py
 $ python runserver.py
  * Running on http://0.0.0.0:8080/
  * Restarting with reloader
 
-$ curl http://127.0.0.1:8080/servers/
+$ curl http://localhost:8080/servers/
 [
     {
         "address": ":::64739",
@@ -139,9 +138,7 @@ docker build -t murmur-rest .
 docker run -it -p 8080:8080 --rm murmur-rest
 ```
 
-* Load `http://{VM IP}:8080/servers/` into the browser to test.
-If you're unsure what your Docker VM's host is, just run `docker-machine ls` to check.
-
+* Load `http://localhost:8080/servers/` into the browser to test.
 
 
 ###  Deployment for Production
