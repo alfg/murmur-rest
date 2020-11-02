@@ -449,7 +449,7 @@ class ServersView(FlaskView):
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
     @route('<int:id>/channels/<int:channel_id>', methods=['PATCH'])
-    def updates_channel(self, id, channel_id):
+    def update_channel(self, id, channel_id):
         """ Update specific channel attributes
         """
 
@@ -627,7 +627,7 @@ class ServersView(FlaskView):
 
     @conditional(auth.login_required, auth_enabled)
     @route('<int:id>/channels/<int:channel_id>/acl', methods=['PATCH'])
-    def upadte_channel_acl(self, id, channel_id):
+    def update_channel_acl(self, id, channel_id):
         """ Update specific channel ACL
         """
 
@@ -645,17 +645,31 @@ class ServersView(FlaskView):
         params = request.get_json()
         if params['acls'] is not None:
             new_acls = []
-                for props in params['acls']:
-                    new_acls.append(Murmur.ACL(props['applyHere'], props['applySubs'], props['inherited'], props['userid'], props['group'], props['allow'], props['deny']))
-
-                    update_acls = new_acls
+            for props in params['acls']:
+                new_acls.append(Murmur.ACL(
+                    props['applyHere'],
+                    props['applySubs'],
+                    props['inherited'],
+                    props['userid'],
+                    props['group'],
+                    props['allow'],
+                    props['deny'])
+                )
+                update_acls = new_acls
 
         if params['groups'] is not None:
             new_groups = []
-                for props in params['groups']:
-                    new_groups.append(Murmur.Group(props['name'], props['inherited'], props['inherit'], props['inheritable'], props['add'], props['remove'], props['members']))
-
-                    update_groups = new_groups
+            for props in params['groups']:
+                new_groups.append(Murmur.Group(
+                    props['name'],
+                    props['inherited'],
+                    props['inherit'],
+                    props['inheritable'],
+                    props['add'],
+                    props['remove'],
+                    props['members'])
+                )
+                update_groups = new_groups
 
         if params['inherit'] is not None:
             update_inherit = bool(params['inherit'])
