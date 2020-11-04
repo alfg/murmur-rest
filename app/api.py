@@ -655,7 +655,7 @@ class ServersView(FlaskView):
                     props['allow'],
                     props['deny'])
                 )
-                update_acls = new_acls
+            update_acls = new_acls
 
         if params['groups'] is not None:
             new_groups = []
@@ -668,7 +668,7 @@ class ServersView(FlaskView):
                     props['add'],
                     props['remove'])
                 )
-                update_groups = new_groups
+            update_groups = new_groups
 
         if params['inherit'] is not None:
             update_inherit = bool(params['inherit'])
