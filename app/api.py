@@ -653,7 +653,7 @@ class ServersView(FlaskView):
         if params['groups'] is not None:
             new_groups = []
                 for props in params['groups']:
-                    new_groups.append(Murmur.Group(props['name'], props['inherited'], props['inherit'], props['inheritable'], props['add'], props['remove'], props['members']))
+                    new_groups.append(Murmur.Group(props['name'], props['inherited'], props['inherit'], props['inheritable'], props['add'], props['remove'])
 
                     update_groups = new_groups
 
