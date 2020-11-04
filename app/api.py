@@ -643,7 +643,7 @@ class ServersView(FlaskView):
         update_inherit = origin_acl[2]
 
         params = request.get_json()
-        if params['acls'] is not None:
+        if "acls" in params and params['acls'] is not None:
             new_acls = []
             for props in params['acls']:
                 new_acls.append(Murmur.ACL(
@@ -657,7 +657,7 @@ class ServersView(FlaskView):
                 )
             update_acls = new_acls
 
-        if params['groups'] is not None:
+        if "groups" in params and params['groups'] is not None:
             new_groups = []
             for props in params['groups']:
                 new_groups.append(Murmur.Group(
@@ -670,7 +670,7 @@ class ServersView(FlaskView):
                 )
             update_groups = new_groups
 
-        if params['inherit'] is not None:
+        if "inherit" in params and params['inherit'] is not None:
             update_inherit = bool(params['inherit'])
 
         server.setACL(channel_id, update_acls, update_groups, update_inherit)
