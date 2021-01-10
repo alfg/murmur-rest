@@ -140,6 +140,24 @@ docker run -it -p 8080:8080 --rm murmur-rest
 
 * Load `http://localhost:8080/servers/` into the browser to test.
 
+#### Disabling `userland-proxy`
+The userland-proxy can eat up a lot of memory, especially when using a long range of ports.
+Disabling this option can reduce memory usage drastically.
+
+Create `/etc/docker/daemon.json` and add:
+```json
+{
+    "userland-proxy": false
+}
+```
+
+Restart `dockerd`:
+```
+sudo systemctl restart docker
+```
+
+https://docs.docker.com/engine/reference/commandline/dockerd/
+
 
 ###  Deployment for Production
 
