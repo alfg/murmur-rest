@@ -12,3 +12,4 @@ murmur-rest:
     - "50001-50050:50001-50050"
   volumes:
     - "./:/opt/murmur-rest"
+    - "./mumble-server/:/var/lib/mumble-server/"

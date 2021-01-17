@@ -158,6 +158,13 @@ sudo systemctl restart docker
 
 https://docs.docker.com/engine/reference/commandline/dockerd/
 
+### Persist Database
+You may want to persist your murmur database to a volume. Add to your `docker-compose`:
+```yaml
+  volumes:
+    - "./mumble-server/:/var/lib/mumble-server/"
+```
+
 
 ###  Deployment for Production
 
@@ -177,9 +184,10 @@ For example, if using Gunicorn and virtualenv:
 - API Documentation
 - Error Handling
 - Tests
+- Automate Let's Encrypt SSL Setup
 
 ### Resources
-- [Murmur SLICE API](http://mumble.sourceforge.net/slice/Murmur.html)
+- [Murmur SLICE API](https://wiki.mumble.info/slice/Murmur.html)
 
 ### License
 
