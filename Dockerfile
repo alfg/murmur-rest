@@ -1,5 +1,8 @@
 FROM ubuntu:18.04
 
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
 WORKDIR /opt/murmur-rest
 
 ENV DEBIAN_FRONTEND noninteractive

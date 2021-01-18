@@ -94,8 +94,7 @@ class ServersView(FlaskView):
             'sub_channels': tree['children'] if s.isRunning() else None,
             'users': tree['users'] if s.isRunning() else None,
             'registered_users': s.getRegisteredUsers('') if s.isRunning() else None,
-            'log_length': s.getLogLen(),
-            'bans': s.getBans() if s.isRunning() else 0
+            'log_length': s.getLogLen()
         }
 
         return jsonify(json_data)
