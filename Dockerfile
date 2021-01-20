@@ -34,8 +34,7 @@ RUN python3 -m venv --system-site-packages venv && \
     ./venv/bin/pip3 install -r requirements.txt
 
 # Add config files.
-ADD ./etc/mumble-server.ini /etc/mumble-server.ini
-ADD ./etc/supervisord.conf /etc/supervisor/supervisord.conf
+ADD ./etc/murmur.ini /etc/murmur.ini
 
 # Add app.
 ADD . /opt/murmur-rest
