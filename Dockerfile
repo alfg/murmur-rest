@@ -25,7 +25,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv B6391CB2CFBA643D && \
     apt-add-repository "deb http://zeroc.com/download/ice/3.7/ubuntu18.04 stable main" && \
     apt-get update && apt-get install -y python3-zeroc-ice zeroc-ice-compilers
 
-
 # Install supervisor to system.
 RUN pip3 install supervisor
 
@@ -41,10 +40,6 @@ ADD ./etc/supervisord.conf /etc/supervisor/supervisord.conf
 # Add app.
 ADD . /opt/murmur-rest
 
-# Mumble ports. Please note you'll need to expose ports above 50000
-# if you wish to support more than 1 virtual instance.
-# You can use the range 50000- 65000.
 EXPOSE 8080
-EXPOSE 50000
 
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/opt/murmur-rest/venv/bin/gunicorn", "-b", "0.0.0.0:8080", "-w", "4", "-k", "gthread", "wsgi:app"]
