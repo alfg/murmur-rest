@@ -8,7 +8,7 @@ If you find any issues or would like to help contribute to the project, please r
 
 **Check out my Mumble-Widget project! https://github.com/alfg/mumble-widget**
 
-![Docker Build Status](https://img.shields.io/docker/build/alfg/murmur-rest)
+![Docker Automated build](https://img.shields.io/docker/automated/alfg/murmur-rest)
 ![Docker Pulls](https://img.shields.io/docker/pulls/alfg/murmur-rest)
 
 ### Endpoints
@@ -121,7 +121,29 @@ $ curl http://localhost:8080/servers/
 
 ### Docker Setup
 
-A Dockerfile is provided to easily setup a local development setup. Install [Docker](https://docs.docker.com/engine/installation/) and run the following commands:
+A `docker-compose` and Dockerfile are provided to easily setup a local development setup. Install [Docker](https://docs.docker.com/engine/installation/) and run the following commands:
+
+#### `docker-compose`
+* Run docker-compose:
+```
+docker-compose up
+```
+
+This will start the `murmurd` and `murmur-rest` containers with the default configuration defined in `docker-compose.yml`.
+
+Load `http://localhost:8080/servers/` into the browser to test and login with `admin/password`.
+
+#### `docker`
+* Configure `settings.py` or set environment variables:
+```
+APP_HOST=0.0.0.0
+APP_PORT=8080
+APP_DEBUG=True
+ENABLE_AUTH=True
+USERS=admin:password,admin2:password2
+MURMUR_ICE_HOST=localhost
+MURMUR_ICE_PORT=6502
+```
 
 * Pull docker image and run:
 ```
@@ -158,11 +180,15 @@ sudo systemctl restart docker
 
 https://docs.docker.com/engine/reference/commandline/dockerd/
 
-### Persist Database
-You may want to persist your murmur database to a volume. Add to your `docker-compose`:
+### Volumes
+You may want to persist your murmur database to a volume or mount your local configuration. Add to your `docker-compose`:
 ```yaml
-  volumes:
-    - "./mumble-server/:/var/lib/mumble-server/"
+    volumes:
+      - ./etc/murmur.ini:/etc/murmur/murmur.ini
+      - murmurdb:/var/lib/murmur/
+
+volumes:
+  murmurdb
 ```
 
 
