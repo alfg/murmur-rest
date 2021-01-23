@@ -14,7 +14,8 @@ from flask import request, jsonify, json, Response
 from flask_classful import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
-from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, support_jsonp
+from app.utils import get_server_conf, get_server_port, get_all_users_count
+from app.utils import conditional, support_jsonp, obj_to_dict
 from app.cvp import cvp_chan_to_dict
 
 import Murmur
@@ -33,29 +34,29 @@ class ServersView(FlaskView):
 
         servers = []
         for s in meta.getAllServers():
+            host = get_server_conf(meta, s, 'host')
+            port = get_server_port(meta, s)
+            is_running = s.isRunning()
+            uptime = s.getUptime()
+
             servers.append({
                 'id': s.id(),
                 'name': get_server_conf(meta, s, 'registername'),
-                'address': '%s:%s' % (
-                    get_server_conf(meta, s, 'host'),
-                    get_server_port(meta, s),
-                ),
-                'host': get_server_conf(meta, s, 'host'),
-                'port': get_server_port(meta, s),
-                'running': s.isRunning(),
-                'users': (s.isRunning() and len(s.getUsers())) or 0,
+                'address': '%s:%s' % (host, port),
+                'host': host,
+                'port': port,
+                'running': is_running,
+                'users': (is_running and len(s.getUsers())) or 0,
                 'maxusers': get_server_conf(meta, s, 'users') or 0,
-                'channels': (s.isRunning() and len(s.getChannels())) or 0,
-                'uptime_seconds': s.getUptime() if s.isRunning() else 0,
+                'channels': (is_running and len(s.getChannels())) or 0,
+                'uptime_seconds': uptime if is_running else 0,
                 'uptime': str(
-                    timedelta(seconds=s.getUptime()) if s.isRunning() else ''
+                    timedelta(seconds=uptime) if is_running else ''
                 ),
                 'log_length': s.getLogLen()
             })
 
-        # Workaround response due to jsonify() not allowing top-level json response
-        # https://github.com/mitsuhiko/flask/issues/170
-        return Response(json.dumps(servers, sort_keys=True, indent=4), mimetype='application/json')
+        return jsonify(servers)
 
     @conditional(auth.login_required, auth_enabled)
     def get(self, id):
