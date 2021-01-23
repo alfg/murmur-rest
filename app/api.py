@@ -37,7 +37,7 @@ class ServersView(FlaskView):
             host = get_server_conf(meta, s, 'host')
             port = get_server_port(meta, s)
             is_running = s.isRunning()
-            uptime = s.getUptime()
+            uptime = s.getUptime() if is_running else 0
 
             servers.append({
                 'id': s.id(),
