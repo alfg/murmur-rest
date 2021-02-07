@@ -20,6 +20,14 @@ from app.cvp import cvp_chan_to_dict
 
 import Murmur
 
+class HomeView(FlaskView):
+    @route('health-check', methods=['GET'])
+    def health(self):
+        try:
+            s = meta.getVersion()
+            return jsonify({ 'status': 'OK' })
+        except:
+            return jsonify({ 'status': 'NOTOK' }), 503
 
 class ServersView(FlaskView):
     """
@@ -121,21 +129,24 @@ class ServersView(FlaskView):
         registerurl = request.form.get('registerurl')
 
         # Create server
-        server = meta.newServer()
+        try:
+            server = meta.newServer()
 
-        # Set conf if provided
-        server.setConf('password', password) if password else None
-        server.setConf('port', port) if port else None
-        server.setConf('timeout', timeout) if timeout else None
-        server.setConf('bandwidth', bandwidth) if bandwidth else None
-        server.setConf('users', users) if users else None
-        server.setConf('welcometext', welcometext) if welcometext else None
-        server.setConf('registername', registername) if registername else None
+            # Set conf if provided
+            server.setConf('password', password) if password else None
+            server.setConf('port', port) if port else None
+            server.setConf('timeout', timeout) if timeout else None
+            server.setConf('bandwidth', bandwidth) if bandwidth else None
+            server.setConf('users', users) if users else None
+            server.setConf('welcometext', welcometext) if welcometext else None
+            server.setConf('registername', registername) if registername else None
 
-        # Start server
-        server.start()
+            # Start server
+            server.start()
 
-        return self.get(server.id())
+            return self.get(server.id())
+        except:
+            return jsonify(message="Error creating server"), 500
 
     @conditional(auth.login_required, auth_enabled)
     def delete(self, id):
@@ -143,19 +154,22 @@ class ServersView(FlaskView):
         Shuts down and deletes a server
         """
 
-        server = meta.getServer(int(id))
+        try:
+            server = meta.getServer(int(id))
 
-        # Return 404 if not found
-        if server is None:
-            return jsonify(message="Not Found"), 404
+            # Return 404 if not found
+            if server is None:
+                return jsonify(message="Not Found"), 404
 
-        # Stop server first if it is running
-        if server.isRunning():
-            server.stop()
+            # Stop server first if it is running
+            if server.isRunning():
+                server.stop()
 
-        # Delete server instance
-        server.delete()
-        return jsonify(message="Server deleted")
+            # Delete server instance
+            server.delete()
+            return jsonify(message="Server deleted")
+        except:
+            return jsonify(message="Error deleting server")
 
     @conditional(auth.login_required, auth_enabled)
     @route('delete', methods=['DELETE'])
@@ -721,6 +735,7 @@ class CVPView(FlaskView):
 
 
 # Register views
+HomeView.register(app, route_base='/')
 ServersView.register(app)
 StatsView.register(app)
 CVPView.register(app)

@@ -34,6 +34,7 @@ import Murmur
 props = Ice.createProperties()
 props.setProperty("Ice.ImplicitContext", "Shared")
 props.setProperty('Ice.Default.EncodingVersion', '1.0')
+props.setProperty('Ice.Default.InvocationTimeout', str(30 * 1000))
 props.setProperty('Ice.MessageSizeMax', str(settings.ICE_MESSAGESIZE))
 idata = Ice.InitializationData()
 idata.properties = props
