@@ -1,6 +1,13 @@
 version: '3'
 
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
   murmur-rest:
 #   image: alfg/murmur-rest
     build: .
@@ -12,9 +19,10 @@ services:
       - MURMUR_ICE_PORT=6502
       - ENABLE_AUTH=True
       - USERS=admin:password,admin2:password2
+      - VIRTUAL_HOST=localhost
     ports:
       - "8080:8080"
-      - "5000:5000"
+    #   - "5000:5000"
     links:
       - "murmurd"
     volumes:
@@ -25,6 +33,7 @@ services:
     ports:
       - "127.0.0.1:6502:6502"
       - "50000-50050:50000-50050"
+      - "50000-50050:50000-50050/udp"
     volumes:
       - ./etc/murmur.ini:/etc/murmur/murmur.ini
       - murmurdb:/var/lib/murmur/
