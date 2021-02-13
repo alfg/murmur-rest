@@ -15,6 +15,7 @@ services:
       - APP_HOST=0.0.0.0
       - APP_PORT=8080
       - APP_DEBUG=True
+      - APP_SECRET_KEY=supersecret
       - MURMUR_ICE_HOST=murmurd
       - MURMUR_ICE_PORT=6502
       - ENABLE_AUTH=True
@@ -25,8 +26,8 @@ services:
     #   - "5000:5000"
     links:
       - "murmurd"
-    volumes:
-      - "./:/opt/murmur-rest"
+    # volumes:
+    #   - "./:/opt/murmur-rest"
 
   murmurd:
     image: alfg/murmur

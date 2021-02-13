@@ -13,6 +13,7 @@ import os
 APP_HOST = os.environ.get("APP_HOST", "0.0.0.0")
 APP_PORT = os.environ.get("APP_PORT", 8080)
 APP_DEBUG = os.environ.get("APP_DEBUG") == "True"
+APP_SECRET_KEY = os.environ.get("APP_SECRET_KEY", os.urandom(24))
 
 # Ice connectivity
 ICE_HOST_HOST = os.environ.get('MURMUR_ICE_HOST', 'localhost')

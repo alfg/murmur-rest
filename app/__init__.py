@@ -18,7 +18,7 @@ import Ice
 
 # Create Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SECRET_KEY'] = settings.APP_SECRET_KEY
 
 # Initialize Digest Auth
 auth = HTTPDigestAuth()
