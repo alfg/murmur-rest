@@ -63,6 +63,8 @@ If you find any issues or would like to help contribute to the project, please r
 
 ### Development Setup
 
+* Python 3.7+ recommended
+
 Assuming you already have Murmur running and set up, follow the instructions below to run murmur-rest
 for development. Tested on Ubuntu 18.04, but should be to run wherever Murmur and Zero Ice are supported.
 
