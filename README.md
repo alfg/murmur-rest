@@ -73,7 +73,7 @@ Deployment for Production for running in production mode. Python `venv` is highl
 
 1) Install required Zero Ice library
 
-`sudo apt-get install python-zeroc-ice`
+`sudo apt-get install python-zeroc-ice zeroc-ice-compilers`
 
 2) Clone and install murmur-rest
 
