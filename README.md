@@ -56,8 +56,10 @@ If you find any issues or would like to help contribute to the project, please r
 | ---- | --------------- |
 | GET /servers/:serverid/channels | Get all channels in a server |
 | GET /servers/:serverid/channels/:channelid | Get a channel from a server by ID |
+| PATCH /servers/:serverid/channels/:channelid | Update specific channel attributes by ID |
 | POST /servers/:serverid/channels | Create Channel, formdata:  name&parent |
 | GET /servers/:serverid/channels/:channelid/acl | Get ACL list for channel ID |
+| PATCH /servers/:serverid/channels/:channelid/acl | Update specific channel ACL by channel ID |
 | DELETE /servers/:serverid/channels/:channelid | Delete Channel |
 
 

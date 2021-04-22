@@ -462,6 +462,51 @@ class ServersView(FlaskView):
 
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
 
+    @route('<int:id>/channels/<int:channel_id>', methods=['PATCH'])
+    def update_channel(self, id, channel_id):
+        """ Update specific channel attributes
+        """
+
+        server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        # Return 404 if not found
+        channel = server.getChannelState(channel_id)
+        if channel is None:
+            return jsonify(message="Not Found"), 404
+
+        name = request.form.get('name')
+        parent = request.form.get('parent')
+        description = request.form.get('description')
+        links = request.form.getlist('links[]')
+        description = request.form.get('description')
+        position = request.form.get('position')
+        temporary = request.form.get('temporary')
+
+        if name is not None:
+            channel.name = str(name)
+        if parent is not None:
+            channel.parent = int(parent)
+        if description is not None:
+            channel.description = str(description)
+        if links is not None:
+            for idx in range(len(links)):
+                links[idx] = int(links[idx])
+                channel.links = links
+        if position is not None:
+            channel.position = int(position)
+        if temporary is not None:
+            channel.temporary = bool(temporary)
+
+        server.setChannelState(channel)
+
+        data = obj_to_dict(server.getChannelState(channel_id))
+
+        return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
+
     @conditional(auth.login_required, auth_enabled)
     @route('<int:id>/channels/<channel>', methods=['DELETE'])
     def channel_del_channel(self, id, channel):
@@ -590,6 +635,59 @@ class ServersView(FlaskView):
         # Return 404 if not found
         if server is None:
             return jsonify(message="Not Found"), 404
+
+        data = obj_to_dict(server.getACL(channel_id))
+        return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/channels/<int:channel_id>/acl', methods=['PATCH'])
+    def update_channel_acl(self, id, channel_id):
+        """ Update specific channel ACL
+        """
+
+        server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        origin_acl = server.getACL(channel_id)
+        update_acls = origin_acl[0]
+        update_groups = origin_acl[1]
+        update_inherit = origin_acl[2]
+
+        params = request.get_json()
+        if "acls" in params and params['acls'] is not None:
+            new_acls = []
+            for props in params['acls']:
+                new_acls.append(Murmur.ACL(
+                    props['applyHere'],
+                    props['applySubs'],
+                    props['inherited'],
+                    props['userid'],
+                    props['group'],
+                    props['allow'],
+                    props['deny'])
+                )
+            update_acls = new_acls
+
+        if "groups" in params and params['groups'] is not None:
+            new_groups = []
+            for props in params['groups']:
+                new_groups.append(Murmur.Group(
+                    props['name'],
+                    props['inherited'],
+                    props['inherit'],
+                    props['inheritable'],
+                    props['add'],
+                    props['remove'])
+                )
+            update_groups = new_groups
+
+        if "inherit" in params and params['inherit'] is not None:
+            update_inherit = bool(params['inherit'])
+
+        server.setACL(channel_id, update_acls, update_groups, update_inherit)
 
         data = obj_to_dict(server.getACL(channel_id))
         return Response(json.dumps(data, sort_keys=True, indent=4), mimetype='application/json')
