@@ -121,6 +121,7 @@ class ServersView(FlaskView):
         bandwidth = request.form.get('bandwidth')
         users = request.form.get('users')
         welcometext = request.form.get('welcometext')
+        name = request.form.get('name')
 
         # Data for registration in the public server list
         registername = request.form.get('registername')
@@ -143,6 +144,11 @@ class ServersView(FlaskView):
 
             # Start server
             server.start()
+
+            if name:
+                dataold = server.getChannelState(0)
+                dataold.name = name
+                server.setChannelState(dataold)
 
             return self.get(server.id())
         except:
@@ -284,6 +290,32 @@ class ServersView(FlaskView):
         json_data = {
             "user_id": user,
             "deleted": 'Success'
+        }
+        return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/user/<int:userid>/move/<int:channel_id>', methods=['POST'])
+    def user_move_user(self, id, userid, channel_id):
+        """ Mutes a user
+        """
+
+        server = meta.getServer(id)
+
+        if server is None:
+            return jsonify(message="Server Not Found"), 404
+
+        user = self.get_user(server, userid)
+        if user is None:
+            return jsonify(message="User Not Found"), 404
+
+        state = server.getState(user.session)
+        state.channel = channel_id
+
+        server.setState(state)
+
+        json_data = {
+            "user_id": user.userid,
+            "moved": 'Success'
         }
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
@@ -457,6 +489,9 @@ class ServersView(FlaskView):
         parent = request.form.get('parent')
 
         added = server.addChannel(name, int(parent))
+        dataold = server.getChannelState(int(added))
+        dataold.links = [0]
+        server.setChannelState(dataold)
 
         data = obj_to_dict(server.getChannelState(int(added)))
 
