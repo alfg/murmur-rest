@@ -342,6 +342,30 @@ class ServersView(FlaskView):
         return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
 
     @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/user/<int:userid>/move/<int:channelid>', methods=['POST'])
+    def user_move_user(self, id, userid, channelid):
+        server = meta.getServer(id)
+
+        if server is None:
+            return jsonify(message="Server Not Found"), 404
+
+        user = self.get_user(server, userid)
+        if user is None:
+            return jsonify(message="User Not Found"), 404
+
+        state = server.getState(user.session)
+
+        state.channel = channelid
+
+        server.setState(state)
+
+        json_data = {
+            "user_id": user.userid,
+            "moved": 'Success'
+        }
+        return Response(json.dumps(json_data, sort_keys=True, indent=4), mimetype='application/json')
+
+    @conditional(auth.login_required, auth_enabled)
     @route('<int:id>/user', methods=['POST'])
     def user_new_user(self, id):
         """ Creates user
