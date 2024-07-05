@@ -41,3 +41,4 @@ venv
 
 # Editor backups
 *~
+.vscode

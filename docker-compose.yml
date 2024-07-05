@@ -1,15 +1,5 @@
-version: '3'
-
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - "80:80"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-
   murmur-rest:
-#   image: alfg/murmur-rest
     build: .
     environment:
       - APP_HOST=0.0.0.0
@@ -23,11 +13,8 @@ services:
       - VIRTUAL_HOST=localhost
     ports:
       - "8080:8080"
-    #   - "5000:5000"
     links:
       - "murmurd"
-    # volumes:
-    #   - "./:/opt/murmur-rest"
 
   murmurd:
     image: alfg/murmur

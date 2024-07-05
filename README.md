@@ -15,55 +15,54 @@ If you find any issues or would like to help contribute to the project, please r
 
 #### Servers
 
-| Endpoint | Description |
-| ---- | --------------- |
-| GET /servers/ | Get server list |
-| POST /servers/ | Create a new server, starts it, and returns details |
-| GET /servers/:serverid | Get server details |
-| POST /servers/:serverid/start | Start server |
-| POST /servers/:serverid/stop | Stop server |
-| DELETE /servers/:serverid | Delete server |
-| DELETE /servers/delete?id=1,2,3 | Delete multiple servers |
-| GET /servers/:serverid/logs | Get server logs |
-| GET /servers/:serverid/bans | Get list of banned users |
-| GET /servers/:serverid/conf | Get server configuration for specified id |
-| POST /servers/:serverid/conf?key=users&value=100 | Set configuration variable 'users' to 100 |
-| POST /servers/:serverid/sendmessage | Send a message to all channels in a server. formdata: message |
-| POST /servers/:serverid/setsuperuserpw | Sets SuperUser password. formdata: password |
+| Endpoint                                         | Description                                                   |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+| GET /servers/                                    | Get server list                                               |
+| POST /servers/                                   | Create a new server, starts it, and returns details           |
+| GET /servers/:serverid                           | Get server details                                            |
+| POST /servers/:serverid/start                    | Start server                                                  |
+| POST /servers/:serverid/stop                     | Stop server                                                   |
+| DELETE /servers/:serverid                        | Delete server                                                 |
+| DELETE /servers/delete?id=1,2,3                  | Delete multiple servers                                       |
+| GET /servers/:serverid/logs                      | Get server logs                                               |
+| GET /servers/:serverid/bans                      | Get list of banned users                                      |
+| GET /servers/:serverid/conf                      | Get server configuration for specified id                     |
+| POST /servers/:serverid/conf?key=users&value=100 | Set configuration variable 'users' to 100                     |
+| POST /servers/:serverid/sendmessage              | Send a message to all channels in a server. formdata: message |
+| POST /servers/:serverid/setsuperuserpw           | Sets SuperUser password. formdata: password                   |
 
 #### Stats
 
-| Endpoint | Description |
-| ---- | --------------- |
+| Endpoint    | Description        |
+| ----------- | ------------------ |
 | GET /stats/ | Get all statistics |
 
 #### Users
 
-| Endpoint | Description |
-| ---- | --------------- |
-| GET /servers/:serverid/user | Get all users in a server |
-| GET /servers/:serverid/user/:userid | Get User |
-| POST /servers/:serverid/user | Create User, formdata:  username&password |
-| DELETE /servers/:serverid/user/:userid | Delete User |
-| POST /servers/:serverid/kickuser?usersession=1 | Kick user with session #1 |
-| POST /servers/:serverid/user/:userid/mute | Mute User |
-| POST /servers/:serverid/user/:userid/unmute | Unmute User |
-| POST /servers/:serverid/user/:userid/update | Update registered username. formdata: username
+| Endpoint                                       | Description                                    |
+| ---------------------------------------------- | ---------------------------------------------- |
+| GET /servers/:serverid/user                    | Get all users in a server                      |
+| GET /servers/:serverid/user/:userid            | Get User                                       |
+| POST /servers/:serverid/user                   | Create User, formdata: username&password       |
+| DELETE /servers/:serverid/user/:userid         | Delete User                                    |
+| POST /servers/:serverid/kickuser?usersession=1 | Kick user with session #1                      |
+| POST /servers/:serverid/user/:userid/mute      | Mute User                                      |
+| POST /servers/:serverid/user/:userid/unmute    | Unmute User                                    |
+| POST /servers/:serverid/user/:userid/update    | Update registered username. formdata: username |
 
 #### Channels
 
-| Endpoint | Description |
-| ---- | --------------- |
-| GET /servers/:serverid/channels | Get all channels in a server |
-| GET /servers/:serverid/channels/:channelid | Get a channel from a server by ID |
-| POST /servers/:serverid/channels | Create Channel, formdata:  name&parent |
-| GET /servers/:serverid/channels/:channelid/acl | Get ACL list for channel ID |
-| DELETE /servers/:serverid/channels/:channelid | Delete Channel |
-
+| Endpoint                                       | Description                           |
+| ---------------------------------------------- | ------------------------------------- |
+| GET /servers/:serverid/channels                | Get all channels in a server          |
+| GET /servers/:serverid/channels/:channelid     | Get a channel from a server by ID     |
+| POST /servers/:serverid/channels               | Create Channel, formdata: name&parent |
+| GET /servers/:serverid/channels/:channelid/acl | Get ACL list for channel ID           |
+| DELETE /servers/:serverid/channels/:channelid  | Delete Channel                        |
 
 ### Development Setup
 
-* Python 3.7+ recommended
+- Python 3.7+ recommended
 
 Assuming you already have Murmur running and set up, follow the instructions below to run murmur-rest
 for development. Tested on Ubuntu 18.04, but should be to run wherever Murmur and Zero Ice are supported.
@@ -71,11 +70,11 @@ for development. Tested on Ubuntu 18.04, but should be to run wherever Murmur an
 Runserver.py uses Flask's development server. This should be used for development only. See
 Deployment for Production for running in production mode. Python `venv` is highly recommended as well.
 
-1) Install required Zero Ice library
+1. Install required Zero Ice library
 
 `sudo apt-get install python-zeroc-ice zeroc-ice-compilers`
 
-2) Clone and install murmur-rest
+2. Clone and install murmur-rest
 
 ```
 git clone git@github.com:alfg/murmur-rest.git
@@ -83,9 +82,10 @@ cd /directory/to/murmur-rest
 pip install -r requirements.txt
 ```
 
-*Note*: If running in venv, use the `--system-site-packages` flag in order to import the Ice library.
+_Note_: If running in venv, use the `--system-site-packages` flag in order to import the Ice library.
 
-3) Set your environment variables:
+3. Set your environment variables:
+
 ```
 APP_HOST=0.0.0.0
 APP_PORT=8080
@@ -96,7 +96,7 @@ MURMUR_ICE_HOST=localhost
 MURMUR_ICE_PORT=6502
 ```
 
-4) Run and test application
+4. Run and test application
 
 ```
 $ python runserver.py
@@ -120,13 +120,14 @@ $ curl http://localhost:8080/servers/
 ]
 ```
 
-
 ### Docker Setup
 
 A `docker-compose` and Dockerfile are provided to easily setup a local development setup. Install [Docker](https://docs.docker.com/engine/installation/) and run the following commands:
 
 #### `docker-compose`
-* Run docker-compose:
+
+- Run docker-compose:
+
 ```
 docker-compose up
 ```
@@ -136,7 +137,9 @@ This will start the `murmurd` and `murmur-rest` containers with the default conf
 Load `http://localhost:8080/servers/` into the browser to test and login with `admin/password`.
 
 #### `docker`
-* Configure `settings.py` or set environment variables:
+
+- Configure `settings.py` or set environment variables:
+
 ```
 APP_HOST=0.0.0.0
 APP_PORT=8080
@@ -147,7 +150,8 @@ MURMUR_ICE_HOST=localhost
 MURMUR_ICE_PORT=6502
 ```
 
-* Pull docker image and run:
+- Pull docker image and run:
+
 ```
 docker pull alfg/murmur-rest
 docker run -it -p 8080:8080 --rm alfg/murmur-rest
@@ -155,27 +159,31 @@ docker run -it -p 8080:8080 --rm alfg/murmur-rest
 
 or
 
-* Build and run container from source:
+- Build and run container from source:
+
 ```
 git clone https://github.com/alfg/murmur-rest
 docker build -t murmur-rest .
 docker run -it -p 8080:8080 --rm murmur-rest
 ```
 
-* Load `http://localhost:8080/servers/` into the browser to test.
+- Load `http://localhost:8080/servers/` into the browser to test.
 
 #### Disabling `userland-proxy`
+
 The userland-proxy can eat up a lot of memory, especially when using a long range of ports.
 Disabling this option can reduce memory usage drastically.
 
 Create `/etc/docker/daemon.json` and add:
+
 ```json
 {
-    "userland-proxy": false
+  "userland-proxy": false
 }
 ```
 
 Restart `dockerd`:
+
 ```
 sudo systemctl restart docker
 ```
@@ -183,7 +191,9 @@ sudo systemctl restart docker
 https://docs.docker.com/engine/reference/commandline/dockerd/
 
 ### Volumes
+
 You may want to persist your murmur database to a volume or mount your local configuration. Add to your `docker-compose`:
+
 ```yaml
     volumes:
       - ./etc/murmur.ini:/etc/murmur/murmur.ini
@@ -193,8 +203,7 @@ volumes:
   murmurdb
 ```
 
-
-###  Deployment for Production
+### Deployment for Production
 
 Following the same steps for Deployment for Development, just use a Python WSGI application server
 such as [Gunicorn](http://gunicorn.org/) instead of the built-in Flask server. The provided `wsgi.py`
@@ -215,6 +224,7 @@ For example, if using Gunicorn and virtualenv:
 - Automate Let's Encrypt SSL Setup
 
 ### Resources
+
 - [Murmur SLICE API](https://wiki.mumble.info/slice/Murmur.html)
 
 ### License
